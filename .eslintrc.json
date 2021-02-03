@@ -1,0 +1,23 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["plugin:react/recommended", "standard", "prettier/standard"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "space-before-function-paren": "off",
+    "camelcase": "off",
+    "multiline-ternary": "off",
+    "react/prop-types": "off",
+    "prettier/prettier": "error",
+    "no-use-before-define": "off"
+  }
+}
