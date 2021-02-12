@@ -1,12 +1,17 @@
 import React from 'react'
 import GlobalStyle from './styles/global'
+import AppDBProvider from './services/Firebase'
+
+import './services/Firebase/firebase'
 
 import Routes from './routes'
 
 const App = () => {
   return (
     <>
-      <Routes />
+      <AppDBProvider>
+        <Routes />
+      </AppDBProvider>
       <GlobalStyle />
     </>
   )

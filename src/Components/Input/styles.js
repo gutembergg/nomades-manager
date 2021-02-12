@@ -48,4 +48,7 @@ export const InputWrapper = styled.div`
       color: #a5a5a5;
     }
   }
+  .icon-click {
+    cursor: pointer;
+  }
 `
