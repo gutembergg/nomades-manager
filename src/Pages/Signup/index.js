@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import Input from '../../Components/Input'
 import Button from '../../Components/Button'
@@ -9,8 +10,7 @@ import { Container, Content, Form } from './styles'
 
 const Signup = () => {
   const firebaseDB = useContext(FirebaseContext)
-
-  console.log('firebaseDB', firebaseDB)
+  const history = useHistory()
 
   const [model, setModel] = useState({
     name: '',
@@ -34,6 +34,16 @@ const Signup = () => {
       firebaseDB
         .auth()
         .createUserWithEmailAndPassword(model.email, model.password)
+        .then(authUser => {
+          if (authUser) {
+            firebaseDB.database().ref(`users/${authUser.user.uid}`).push({
+              name: model.name
+            })
+          }
+        })
+        .catch(err => console.log(err))
+
+      history.push('/dashboard/dev')
     },
     [model]
   )
