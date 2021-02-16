@@ -9,8 +9,9 @@ import { FirebaseContext } from '../../services/Firebase/context'
 import { Container, Content, Form } from './styles'
 
 const Signup = () => {
-  const firebaseDB = useContext(FirebaseContext)
   const history = useHistory()
+
+  const firebase = useContext(FirebaseContext)
 
   const [model, setModel] = useState({
     name: '',
@@ -31,13 +32,14 @@ const Signup = () => {
   const signupUser = useCallback(
     e => {
       e.preventDefault()
-      firebaseDB
+      firebase
         .auth()
         .createUserWithEmailAndPassword(model.email, model.password)
         .then(authUser => {
           if (authUser) {
-            firebaseDB.database().ref(`users/${authUser.user.uid}`).push({
-              name: model.name
+            firebase.database().ref(`users/${authUser.user.uid}`).set({
+              name: model.name,
+              email: model.email
             })
           }
         })

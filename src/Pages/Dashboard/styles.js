@@ -8,3 +8,8 @@ export const Container = styled.div`
   align-items: center;
   background: ${colors.primary};
 `
+
+export const AddClientFormTitle = styled.p`
+  background: #fff;
+  border-bottom: 1px solid #fff;
+`

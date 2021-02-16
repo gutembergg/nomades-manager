@@ -1,36 +1,86 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { FirebaseContext } from '../../services/Firebase/context'
 
-import { Container } from './styles'
+import AddClientForm from './components/AddFormClient'
+import ScrollList from './components/ScrollList'
+
+import { MDBCollapse } from 'mdbreact'
+
+import { Container, AddClientFormTitle } from './styles'
 
 const Dashboard = () => {
-  const firebaseContext = useContext(FirebaseContext)
-  const [userSession, setUserSession] = useState(null)
-  const [data, setData] = useState()
+  const firebase = useContext(FirebaseContext)
 
-  console.log('{userSession.uid', userSession)
+  const [data, setData] = useState()
+  const [clientModel, setClientModel] = useState({
+    name: '',
+    email: '',
+    zoom: ''
+  })
+  const [addClentFormToggle, setAddClentFormToggle] = useState(false)
+  const [userId, setUserId] = useState('')
 
   useEffect(() => {
-    const listener = firebaseContext.auth().onAuthStateChanged(user => {
-      user ? setUserSession(user) : history.push('/')
+    const listener = firebase.auth().onAuthStateChanged(user => {
+      console.log('===>>>>', user)
+      if (user) {
+        firebase
+          .database()
+          .ref(`users/${user.uid}`)
+          .on('child_added', async snap => {
+            console.log('snap', await snap.val())
+            setData(snap.val())
+          })
+      } else {
+        console.log('not user')
+      }
+      const uid = firebase.auth().currentUser.uid
+      setUserId(uid)
+      console.log('uid', uid)
 
-      firebaseContext
-        .database()
-        .ref(`users/${user.uid}`)
-        .on('child_added', snap => {
-          const snapData = snap.val().name
-          console.log('snapData', snapData)
-          setData(snapData)
-        })
+      firebase.database().ref(`users/${user.uid}`).off('child_added', listener)
     })
-
-    return () => {
-      listener()
-    }
   }, [])
-  console.log('snapDaata', userSession)
+  const updateClentModel = e => {
+    setClientModel({
+      ...clientModel,
+      [e.target.dataset.name]: e.target.value
+    })
+  }
+  const addClient = e => {
+    e.preventDefault()
 
-  return <Container>Dashboard{data}</Container>
+    const uid = firebase.auth().currentUser.uid
+
+    firebase.database().ref(`userClients/${uid}`).push({
+      name: clientModel.name,
+      email: clientModel.email,
+      zoom: clientModel.zoom
+    })
+  }
+
+  const toggleCollapse = () => {
+    setAddClentFormToggle(!addClentFormToggle)
+  }
+
+  console.log('==>user==>', userId)
+
+  return (
+    <Container>
+      Dashboard -{data}
+      <AddClientFormTitle onClick={toggleCollapse}>
+        Ajouter client
+      </AddClientFormTitle>
+      <MDBCollapse id="basicCollapse" isOpen={addClentFormToggle}>
+        <AddClientForm
+          onSubmit={addClient}
+          value={clientModel}
+          onChange={updateClentModel}
+        />
+      </MDBCollapse>
+      <ScrollList userId={userId} />
+    </Container>
+  )
 }
 
 export default Dashboard
