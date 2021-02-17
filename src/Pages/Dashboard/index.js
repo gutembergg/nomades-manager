@@ -6,12 +6,12 @@ import ScrollList from './components/ScrollList'
 
 import { MDBCollapse } from 'mdbreact'
 
-import { Container, AddClientFormTitle } from './styles'
+import { Container, AddClientFormTitle, ClientList } from './styles'
 
 const Dashboard = () => {
   const firebase = useContext(FirebaseContext)
 
-  const [data, setData] = useState()
+  /*   const [data, setData] = useState() */
   const [clientModel, setClientModel] = useState({
     name: '',
     email: '',
@@ -22,21 +22,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     const listener = firebase.auth().onAuthStateChanged(user => {
-      console.log('===>>>>', user)
       if (user) {
         firebase
           .database()
           .ref(`users/${user.uid}`)
-          .on('child_added', async snap => {
-            console.log('snap', await snap.val())
-            setData(snap.val())
+          .on('value', snap => {
+            const user2 = snap.val()
+            console.log('snap', user2.name)
+            /*  setData(snap.val()) */
           })
       } else {
         console.log('not user')
       }
       const uid = firebase.auth().currentUser.uid
       setUserId(uid)
-      console.log('uid', uid)
 
       firebase.database().ref(`users/${user.uid}`).off('child_added', listener)
     })
@@ -67,17 +66,19 @@ const Dashboard = () => {
 
   return (
     <Container>
-      Dashboard -{data}
-      <AddClientFormTitle onClick={toggleCollapse}>
-        Ajouter client
-      </AddClientFormTitle>
-      <MDBCollapse id="basicCollapse" isOpen={addClentFormToggle}>
-        <AddClientForm
-          onSubmit={addClient}
-          value={clientModel}
-          onChange={updateClentModel}
-        />
-      </MDBCollapse>
+      Dashboard -
+      <ClientList>
+        <AddClientFormTitle onClick={toggleCollapse}>
+          Ajouter client
+        </AddClientFormTitle>
+        <MDBCollapse id="basicCollapse" isOpen={addClentFormToggle}>
+          <AddClientForm
+            onSubmit={addClient}
+            value={clientModel}
+            onChange={updateClentModel}
+          />
+        </MDBCollapse>
+      </ClientList>
       <ScrollList userId={userId} />
     </Container>
   )

@@ -7,6 +7,8 @@ const ScrollList = ({ userId }) => {
   const [listClients, setListClients] = useState([])
 
   useEffect(() => {
+    const list = [...listClients]
+
     firebase
       .database()
       .ref(`userClients/${userId}`)
@@ -14,20 +16,24 @@ const ScrollList = ({ userId }) => {
         console.log('userscl===>', data.key)
         if (data) {
           const result = data.val()
-          setListClients([...listClients, result])
+
+          list.push(result)
         }
       })
-  }, [])
+    setListClients(list)
+    firebase.database().ref('userClients').off('child_added')
+  }, [userId])
 
-  console.log('-----', listClients)
+  console.log('listClients', listClients)
+
   return (
     <div>
       <div>
-        {/*  <ul>
+        <ul>
           {listClients.map((client, index) => (
             <li key={index}>{client.name}</li>
           ))}
-        </ul> */}
+        </ul>
       </div>
     </div>
   )

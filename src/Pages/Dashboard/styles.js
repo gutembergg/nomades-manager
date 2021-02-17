@@ -13,3 +13,9 @@ export const AddClientFormTitle = styled.p`
   background: #fff;
   border-bottom: 1px solid #fff;
 `
+
+export const ClientList = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
