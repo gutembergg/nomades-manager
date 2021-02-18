@@ -5,7 +5,7 @@ import AddClientForm from './components/AddFormClient'
 import ScrollList from './components/ScrollList'
 import ClientDetail from './components/ClienDetail'
 
-import { MDBCollapse } from 'mdbreact'
+import { MDBCollapse, MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
 import {
   Container,
@@ -78,12 +78,12 @@ const Dashboard = () => {
   const selectClient = id => {
     const clientDetail = listClients.filter(client => client.key === id)
 
-    console.log('clientDetail==>>', clientDetail)
+    console.log('clientDetail==>>', clientDetail[0].key)
 
     setUserClientsdetail({
       ...userClientDetail,
       clientDetailValue: clientDetail[0].val(),
-      clientDetailId: 'key'
+      clientDetailId: clientDetail[0].key
     })
   }
 
@@ -136,6 +136,16 @@ const Dashboard = () => {
           </ClientInfos>
           <ClientDetail userClientDetail={userClientDetail} />
         </Content1>
+        <MDBContainer>
+          <MDBRow>
+            <MDBCol className="d-flex justify-content-around" size="6">
+              .col-4
+            </MDBCol>
+            <MDBCol className="d-flex justify-content-around" size="6">
+              .col-4
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
       </Container>
     </>
   )

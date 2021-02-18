@@ -12,7 +12,7 @@ export const Content1 = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
 
   margin-top: 100px;
 `
