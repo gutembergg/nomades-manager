@@ -8,14 +8,6 @@ export const Container = styled.div`
 
   background: ${colors.primary};
 `
-export const Content1 = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-
-  margin-top: 100px;
-`
 
 export const UserName = styled.div`
   text-align: center;

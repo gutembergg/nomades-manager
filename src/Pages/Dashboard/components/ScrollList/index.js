@@ -10,6 +10,7 @@ const ScrollList = ({ listClient, selectClient }) => {
           {listClient &&
             listClient.map((client, index) => (
               <li
+                className="client_list"
                 id={client.key}
                 style={{ color: '#fff' }}
                 key={index}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { MDBCollapse } from 'mdbreact'
 
-import { Container, ClientDetailContainer, ClientInfos } from './styles'
+import { Container, ClientInfos } from './styles'
 
 const ClientDetail = ({ userClientDetail }) => {
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
@@ -11,20 +11,30 @@ const ClientDetail = ({ userClientDetail }) => {
   }
   return (
     <Container>
-      <ClientDetailContainer>
-        {userClientDetail.clientDetailId !== '' && (
+      {userClientDetail.clientDetailId !== '' && (
+        <>
           <ClientInfos>
-            <li>{userClientDetail.clientDetailValue.name}</li>
-            <li>{userClientDetail.clientDetailValue.email}</li>
-            <li>{userClientDetail.clientDetailId}</li>
+            <li className="client_detail">
+              {userClientDetail.clientDetailValue.name}
+            </li>
+            <li className="client_detail">
+              {userClientDetail.clientDetailValue.email}
+            </li>
+            <li className="client_detail">{userClientDetail.clientDetailId}</li>
           </ClientInfos>
-        )}
-
-        <div>
-          <button onClick={toggleForm}>Projets</button>
-          <MDBCollapse isOpen={addFormProjetsToggle}>Hello world</MDBCollapse>
-        </div>
-      </ClientDetailContainer>
+          <div>
+            <button onClick={toggleForm}>Projets</button>
+            <MDBCollapse isOpen={addFormProjetsToggle}>
+              <form>
+                <input type="text" />
+                <input type="text" />
+                <input type="text" />
+                <button>Valider</button>
+              </form>
+            </MDBCollapse>
+          </div>
+        </>
+      )}
     </Container>
   )
 }
