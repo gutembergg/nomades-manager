@@ -1,10 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { MDBCollapse } from 'mdbreact'
+import { FirebaseContext } from '../../../../services/Firebase/context'
 
 import { Container, ClientInfos } from './styles'
 
 const ClientDetail = ({ userClientDetail }) => {
+  const firebase = useContext(FirebaseContext)
+
+  const [model, setModel] = useState({
+    name: '',
+    description: '',
+    link: ''
+  })
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
+
+  const updateModel = e => {
+    setModel({
+      ...model,
+      [e.target.dataset.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .push({
+        name: model.name,
+        description: model.description,
+        link: model.link
+      })
+  }
+
+  console.log('model', model)
 
   const toggleForm = () => {
     setAddFormProjetsToggle(!addFormProjetsToggle)
@@ -25,10 +55,25 @@ const ClientDetail = ({ userClientDetail }) => {
           <div>
             <button onClick={toggleForm}>Projets</button>
             <MDBCollapse isOpen={addFormProjetsToggle}>
-              <form>
-                <input type="text" />
-                <input type="text" />
-                <input type="text" />
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  data-name="name"
+                  value={model.name}
+                  onChange={updateModel}
+                />
+                <input
+                  type="text"
+                  data-name="description"
+                  value={model.description}
+                  onChange={updateModel}
+                />
+                <input
+                  type="text"
+                  data-name="link"
+                  value={model.link}
+                  onChange={updateModel}
+                />
                 <button>Valider</button>
               </form>
             </MDBCollapse>

@@ -35,7 +35,7 @@ const Dashboard = () => {
   useEffect(() => {
     const list = [...listClients]
 
-    firebase.auth().onAuthStateChanged(user => {
+    const listener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         firebase
           .database()
@@ -53,17 +53,6 @@ const Dashboard = () => {
             if (data) {
               const result = await data
               list.push(result)
-
-              /* list.sort((a, b) => {
-                console.log('sort', a.val().name)
-                if (a.val().name < b.val().name) {
-                  return -1
-                }
-                if (a.val().name > b.val().name) {
-                  return 1
-                }
-                return 0
-              }) */
               console.log('list==>', list)
 
               setListClients(list)
@@ -75,7 +64,7 @@ const Dashboard = () => {
       const uid = firebase.auth().currentUser.uid
       setUserId(uid)
 
-      /* firebase.database().ref(`users/${user.uid}`).off('child_added', listener) */
+      firebase.database().ref(`users/${user.uid}`).off('child_added', listener)
     })
   }, [userId, data])
 
@@ -107,6 +96,12 @@ const Dashboard = () => {
       email: clientModel.email,
       zoom: clientModel.zoom
     })
+
+    setClientModel({
+      name: '',
+      email: '',
+      zoom: ''
+    })
   }
 
   const toggleCollapse = () => {
@@ -130,27 +125,31 @@ const Dashboard = () => {
         <MDBContainer style={{ marginTop: '60px' }}>
           <MDBRow>
             <MDBCol className="d-flex justify-content-around" size="6">
-              <ClientInfos>
-                <ScrollList
-                  listClient={listClients}
-                  selectClient={selectClient}
-                />
-                <ClientCollapse>
-                  <AddClientFormTitle onClick={toggleCollapse}>
-                    Ajouter client
-                  </AddClientFormTitle>
-                  <MDBCollapse isOpen={addClentFormToggle}>
-                    <AddClientForm
-                      onSubmit={addClient}
-                      value={clientModel}
-                      onChange={updateClentModel}
-                    />
-                  </MDBCollapse>
-                </ClientCollapse>
-              </ClientInfos>
+              <div>
+                <ClientInfos>
+                  <ScrollList
+                    listClient={listClients}
+                    selectClient={selectClient}
+                  />
+                  <ClientCollapse>
+                    <AddClientFormTitle onClick={toggleCollapse}>
+                      Ajouter client
+                    </AddClientFormTitle>
+                    <MDBCollapse isOpen={addClentFormToggle}>
+                      <AddClientForm
+                        onSubmit={addClient}
+                        value={clientModel}
+                        onChange={updateClentModel}
+                      />
+                    </MDBCollapse>
+                  </ClientCollapse>
+                </ClientInfos>
+              </div>
             </MDBCol>
-            <MDBCol className="d-flex justify-content-around" size="6">
-              <ClientDetail userClientDetail={userClientDetail} />
+            <MDBCol size="6">
+              <div style={{ marginLeft: '150px' }}>
+                <ClientDetail userClientDetail={userClientDetail} />
+              </div>
             </MDBCol>
           </MDBRow>
         </MDBContainer>

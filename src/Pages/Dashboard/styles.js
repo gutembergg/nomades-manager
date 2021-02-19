@@ -16,18 +16,21 @@ export const UserName = styled.div`
   margin-top: 20px;
 `
 
-export const AddClientFormTitle = styled.p`
-  background: #fff;
-  border-bottom: 1px solid gray;
+export const AddClientFormTitle = styled.div`
+  width: 295px;
+  background: #282828;
+  border: none;
+  color: #fff;
 
+  padding-left: 10px;
   margin-top: 20px;
 `
 
 export const ClientCollapse = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
 `
+
 export const ClientInfos = styled.div`
   display: flex;
   flex-direction: column;

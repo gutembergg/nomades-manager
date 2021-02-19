@@ -1,10 +1,12 @@
 import React from 'react'
 
 import { Container } from './styles'
+import './stylesCss.css'
 
 const ScrollList = ({ listClient, selectClient }) => {
   return (
     <div>
+      <h2 style={{ color: '#fff' }}>Mes Clients</h2>
       <Container id="clientList">
         <ul>
           {listClient &&

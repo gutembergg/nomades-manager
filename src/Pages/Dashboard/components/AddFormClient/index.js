@@ -1,17 +1,39 @@
 import React from 'react'
 
-import { AddClientForm } from './styles'
+import { AddClientForm, InputBlock } from './styles'
 
 const AddFormClient = ({ value, ...rest }) => {
   return (
     <div>
       {' '}
       <AddClientForm {...rest}>
-        <input {...rest} data-name="name" type="text" />
-        <input {...rest} data-name="email" type="text" />
-        <input {...rest} data-name="zoom" type="text" />
+        <InputBlock>
+          <input
+            {...rest}
+            className="input_style"
+            data-name="name"
+            type="text"
+            placeholder="Nom"
+          />
+          <input
+            {...rest}
+            className="input_style"
+            data-name="email"
+            type="text"
+            placeholder="Email"
+          />
+          <input
+            {...rest}
+            className="input_style"
+            data-name="zoom"
+            type="text"
+            placeholder="Lien Zoom"
+          />
 
-        <button type="submit">Valider</button>
+          <button className="btn_addClient" type="submit">
+            Valider
+          </button>
+        </InputBlock>
       </AddClientForm>
     </div>
   )
