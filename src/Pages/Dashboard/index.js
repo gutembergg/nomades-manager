@@ -1,5 +1,8 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { FirebaseContext } from '../../services/Firebase/context'
+import { v4 as uuidv4 } from 'uuid'
+
+import { BsPlusCircle } from 'react-icons/bs'
 
 import AddClientForm from './components/AddFormClient'
 import ScrollList from './components/ScrollList'
@@ -14,6 +17,7 @@ import {
   ClientInfos,
   UserName
 } from './styles'
+import Projets from './components/Projets'
 
 const Dashboard = () => {
   const firebase = useContext(FirebaseContext)
@@ -31,6 +35,16 @@ const Dashboard = () => {
     clientDetailValue: {},
     clientDetailId: ''
   })
+
+  // Projets/////////////////////////////////////////
+  const [listProjets, setListProjets] = useState([])
+  const [clientId, setClientId] = useState('')
+  const [selectedProjet, setSelectedProjet] = useState([
+    {
+      projetValues: {},
+      projetId: ''
+    }
+  ])
 
   useEffect(() => {
     const list = [...listClients]
@@ -53,7 +67,6 @@ const Dashboard = () => {
             if (data) {
               const result = await data
               list.push(result)
-              console.log('list==>', list)
 
               setListClients(list)
             }
@@ -90,11 +103,13 @@ const Dashboard = () => {
     e.preventDefault()
 
     const uid = firebase.auth().currentUser.uid
+    const idV4 = uuidv4()
 
     firebase.database().ref(`userClients/${uid}`).push({
       name: clientModel.name,
       email: clientModel.email,
-      zoom: clientModel.zoom
+      zoom: clientModel.zoom,
+      code: idV4
     })
 
     setClientModel({
@@ -102,6 +117,8 @@ const Dashboard = () => {
       email: '',
       zoom: ''
     })
+
+    setAddClentFormToggle(!addClentFormToggle)
   }
 
   const toggleCollapse = () => {
@@ -118,6 +135,48 @@ const Dashboard = () => {
     return 0
   })
 
+  /// //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    setClientId(userClientDetail.clientDetailId)
+    const list = [...listProjets]
+    console.log('useEFE=====================================', list)
+
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .on('child_added', async data => {
+        if (data) {
+          const item = await data
+          list.push(item)
+          console.log('listPush', list)
+          setListProjets(list)
+        }
+
+        firebase
+          .database()
+          .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+          .off('child_added')
+      })
+    setListProjets([])
+  }, [userClientDetail.clientDetailId, clientId])
+
+  const selectedDetail = id => {
+    console.log('selectdProjet', id)
+
+    const selectedProjet = listProjets.filter(projet => projet.key === id)
+    console.log('selectedProjet', selectedProjet)
+    setSelectedProjet({
+      ...selectedProjet,
+      projetValues: selectedProjet[0].val(),
+      projetId: selectedProjet[0].key
+    })
+  }
+
+  console.log('selectedProjet', selectedProjet)
+
+  /// ////////////////////////////////////////////////////////////////
+
   return (
     <>
       <Container>
@@ -128,12 +187,13 @@ const Dashboard = () => {
               <div>
                 <ClientInfos>
                   <ScrollList
-                    listClient={listClients}
-                    selectClient={selectClient}
+                    list={listClients}
+                    selectedDetail={selectClient}
+                    title="Mes clients"
                   />
                   <ClientCollapse>
                     <AddClientFormTitle onClick={toggleCollapse}>
-                      Ajouter client
+                      <BsPlusCircle className="icon_plus" /> Ajouter Clients
                     </AddClientFormTitle>
                     <MDBCollapse isOpen={addClentFormToggle}>
                       <AddClientForm
@@ -148,11 +208,18 @@ const Dashboard = () => {
             </MDBCol>
             <MDBCol size="6">
               <div style={{ marginLeft: '150px' }}>
-                <ClientDetail userClientDetail={userClientDetail} />
+                <ClientDetail
+                  userClientDetail={userClientDetail}
+                  title="Projets"
+                  list={listProjets}
+                  info={userClientDetail.clientDetailValue.name}
+                  selectedDetail={selectedDetail}
+                />
               </div>
             </MDBCol>
           </MDBRow>
         </MDBContainer>
+        <Projets selectedProjet={selectedProjet} />
       </Container>
     </>
   )

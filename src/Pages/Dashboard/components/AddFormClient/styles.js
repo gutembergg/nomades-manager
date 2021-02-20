@@ -17,6 +17,7 @@ export const InputBlock = styled.div`
   }
 
   .btn_addClient {
+    width: 100%;
     background: #00e676;
   }
 `

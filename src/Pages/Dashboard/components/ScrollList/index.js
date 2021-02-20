@@ -3,22 +3,24 @@ import React from 'react'
 import { Container } from './styles'
 import './stylesCss.css'
 
-const ScrollList = ({ listClient, selectClient }) => {
+const ScrollList = ({ list, selectedDetail, title, info }) => {
   return (
     <div>
-      <h2 style={{ color: '#fff' }}>Mes Clients</h2>
+      <h2 style={{ color: '#fff' }}>
+        {title} {info}
+      </h2>
       <Container id="clientList">
         <ul>
-          {listClient &&
-            listClient.map((client, index) => (
+          {list &&
+            list.map(item => (
               <li
                 className="client_list"
-                id={client.key}
+                id={item.key}
                 style={{ color: '#fff' }}
-                key={index}
-                onClick={() => selectClient(client.key)}
+                key={item.key}
+                onClick={() => selectedDetail(item.key)}
               >
-                {client.val().name}
+                {item.val().name}
               </li>
             ))}
         </ul>

@@ -2,9 +2,12 @@ import React, { useState, useContext } from 'react'
 import { MDBCollapse } from 'mdbreact'
 import { FirebaseContext } from '../../../../services/Firebase/context'
 
-import { Container, ClientInfos } from './styles'
+import { BsPlusCircle } from 'react-icons/bs'
 
-const ClientDetail = ({ userClientDetail }) => {
+import { Container, AddProjetForm, AddProjetsFormTitle } from './styles'
+import ScrollList from '../ScrollList'
+
+const ClientDetail = ({ userClientDetail, title, list, selectedDetail }) => {
   const firebase = useContext(FirebaseContext)
 
   const [model, setModel] = useState({
@@ -13,6 +16,8 @@ const ClientDetail = ({ userClientDetail }) => {
     link: ''
   })
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
+  /*  const [listProjets, setListProjets] = useState([])
+  const [clientId, setClientId] = useState('') */
 
   const updateModel = e => {
     setModel({
@@ -34,48 +39,85 @@ const ClientDetail = ({ userClientDetail }) => {
       })
   }
 
-  console.log('model', model)
+  /*  useEffect(() => {
+    setClientId(userClientDetail.clientDetailId)
+    const list = [...listProjets]
+    console.log('useEFE=====================================', list)
+
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .on('child_added', async data => {
+        if (data) {
+          const item = await data
+          list.push(item)
+          console.log('listPush', list)
+          setListProjets(list)
+        }
+
+        firebase
+          .database()
+          .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+          .off('child_added')
+      })
+    setListProjets([])
+  }, [userClientDetail.clientDetailId, clientId]) */
 
   const toggleForm = () => {
     setAddFormProjetsToggle(!addFormProjetsToggle)
   }
+
+  /*   const selectedDetail = id => {
+    console.log('selectdProjet', id)
+
+    const selectedProjet = listProjets.filter(projet => projet.key === id)
+    console.log('selectedProjet', selectedProjet)
+  } */
+
   return (
     <Container>
       {userClientDetail.clientDetailId !== '' && (
         <>
-          <ClientInfos>
-            <li className="client_detail">
-              {userClientDetail.clientDetailValue.name}
-            </li>
-            <li className="client_detail">
-              {userClientDetail.clientDetailValue.email}
-            </li>
-            <li className="client_detail">{userClientDetail.clientDetailId}</li>
-          </ClientInfos>
           <div>
-            <button onClick={toggleForm}>Projets</button>
+            <ScrollList
+              title={title}
+              list={list}
+              info={userClientDetail.clientDetailValue.name}
+              selectedDetail={selectedDetail}
+            />
+            <AddProjetsFormTitle onClick={toggleForm}>
+              <BsPlusCircle className="icon_plus" /> Ajouter Projets
+            </AddProjetsFormTitle>
             <MDBCollapse isOpen={addFormProjetsToggle}>
-              <form onSubmit={handleSubmit}>
+              <AddProjetForm onSubmit={handleSubmit}>
                 <input
                   type="text"
+                  className="input_style"
                   data-name="name"
                   value={model.name}
                   onChange={updateModel}
+                  placeholder="nom"
                 />
                 <input
                   type="text"
+                  className="input_style"
                   data-name="description"
                   value={model.description}
                   onChange={updateModel}
+                  placeholder="description"
                 />
                 <input
                   type="text"
+                  className="input_style"
                   data-name="link"
                   value={model.link}
                   onChange={updateModel}
+                  placeholder="lien du projet"
                 />
-                <button>Valider</button>
-              </form>
+                <button type="submit" className="btn_addClient">
+                  Valider
+                </button>
+              </AddProjetForm>
             </MDBCollapse>
           </div>
         </>

@@ -5,6 +5,7 @@ export const Container = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   background: ${colors.primary};
 `
@@ -24,6 +25,10 @@ export const AddClientFormTitle = styled.div`
 
   padding-left: 10px;
   margin-top: 20px;
+
+  .icon_plus {
+    margin-right: 5px;
+  }
 `
 
 export const ClientCollapse = styled.div`
