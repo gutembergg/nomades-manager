@@ -37,6 +37,11 @@ const Dashboard = () => {
   })
 
   // Projets/////////////////////////////////////////
+  const [projetModel, setProjetModel] = useState({
+    name: '',
+    description: '',
+    link: ''
+  })
   const [listProjets, setListProjets] = useState([])
   const [clientId, setClientId] = useState('')
   const [selectedProjet, setSelectedProjet] = useState([
@@ -45,6 +50,7 @@ const Dashboard = () => {
       projetId: ''
     }
   ])
+  const [newProjet, setNewProjet] = useState(false)
 
   useEffect(() => {
     const list = [...listClients]
@@ -137,6 +143,35 @@ const Dashboard = () => {
 
   /// //////////////////////////////////////////////////////////////
 
+  const updateProjetModel = e => {
+    setProjetModel({
+      ...projetModel,
+      [e.target.dataset.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .push({
+        name: projetModel.name,
+        description: projetModel.description,
+        link: projetModel.link
+      })
+
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .on('child_added', async data => {
+        console.log('data===>>>===>>', data)
+
+        setNewProjet(true)
+      })
+  }
+
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
     const list = [...listProjets]
@@ -158,14 +193,15 @@ const Dashboard = () => {
           .ref(`clientProjets/${userClientDetail.clientDetailId}`)
           .off('child_added')
       })
+
     setListProjets([])
-  }, [userClientDetail.clientDetailId, clientId])
+  }, [userClientDetail.clientDetailId, clientId, newProjet])
 
   const selectedDetail = id => {
-    console.log('selectdProjet', id)
-
     const selectedProjet = listProjets.filter(projet => projet.key === id)
+
     console.log('selectedProjet', selectedProjet)
+
     setSelectedProjet({
       ...selectedProjet,
       projetValues: selectedProjet[0].val(),
@@ -173,9 +209,7 @@ const Dashboard = () => {
     })
   }
 
-  console.log('selectedProjet', selectedProjet)
-
-  /// ////////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////////
 
   return (
     <>
@@ -209,6 +243,9 @@ const Dashboard = () => {
             <MDBCol size="6">
               <div style={{ marginLeft: '150px' }}>
                 <ClientDetail
+                  updateProjetModel={updateProjetModel}
+                  projetModel={projetModel}
+                  handleSubmit={handleSubmit}
                   userClientDetail={userClientDetail}
                   title="Projets"
                   list={listProjets}

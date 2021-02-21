@@ -18,20 +18,17 @@ const Projets = ({ selectedProjet }) => {
           <MDBCol>
             <InfoBlock>
               <InfoContent>
-                <input
+                <p>{selectedProjet && selectedProjet.projetValues?.name}</p>
+                <p></p>
+                <p></p>
+
+                {/*   <input
                   type="text"
                   value={selectedProjet && selectedProjet.projetValues?.name}
                   placeholder="name"
                   disabled={enableInput}
                 />
-                {/* <input
-                  type="text"
-                  value={
-                    selectedProjet && selectedProjet.projetValues?.description
-                  }
-                  placeholder="description"
-                  disabled={enableInput}
-                /> */}
+
                 <textarea
                   value={
                     selectedProjet && selectedProjet.projetValues?.description
@@ -46,7 +43,7 @@ const Projets = ({ selectedProjet }) => {
                   value={selectedProjet && selectedProjet.projetValues?.link}
                   placeholder="lien"
                   disabled={enableInput}
-                />
+                /> */}
                 {!enableInput && <button>Valider</button>}
               </InfoContent>
               <BsGearFill onClick={activeInput} />
