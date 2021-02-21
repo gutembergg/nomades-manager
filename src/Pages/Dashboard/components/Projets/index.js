@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react'
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 import { BsGearFill } from 'react-icons/bs'
+import Etapes from '../Etapes_projets'
 
-import { Container, InfoContent, InfoBlock } from './styles'
+import { Container, InfoContent, InfoBlock, FormUpdate } from './styles'
 
 const Projets = ({ selectedProjet }) => {
-  const [enableInput, setEnableInput] = useState(true)
+  const [enableInput, setEnableInput] = useState(false)
 
   const activeInput = useCallback(() => {
     setEnableInput(!enableInput)
@@ -17,39 +18,47 @@ const Projets = ({ selectedProjet }) => {
         <MDBRow>
           <MDBCol>
             <InfoBlock>
-              <InfoContent>
-                <p>{selectedProjet && selectedProjet.projetValues?.name}</p>
-                <p></p>
-                <p></p>
+              {enableInput ? (
+                <FormUpdate>
+                  <input
+                    type="text"
+                    className="input_style"
+                    data-name="name"
+                    placeholder="nom"
+                  />
+                  <textarea
+                    type="text"
+                    className="input_style"
+                    data-name="description"
+                    placeholder="description"
+                    rows="3"
+                    cols="21"
+                  ></textarea>
+                  <input
+                    type="text"
+                    className="input_style"
+                    data-name="link"
+                    placeholder="lien du projet"
+                  />
+                  <button type="submit" className="btn_addClient">
+                    Valider
+                  </button>
+                </FormUpdate>
+              ) : (
+                <InfoContent>
+                  <p>{selectedProjet.projetValues?.name}</p>
+                  <p>{selectedProjet.projetValues?.description}</p>
+                  <p></p>
+                  <button className="btn_update">Lien du projet</button>
+                </InfoContent>
+              )}
 
-                {/*   <input
-                  type="text"
-                  value={selectedProjet && selectedProjet.projetValues?.name}
-                  placeholder="name"
-                  disabled={enableInput}
-                />
-
-                <textarea
-                  value={
-                    selectedProjet && selectedProjet.projetValues?.description
-                  }
-                  placeholder="description"
-                  disabled={enableInput}
-                  rows="3"
-                  cols="35"
-                ></textarea>
-                <input
-                  type="text"
-                  value={selectedProjet && selectedProjet.projetValues?.link}
-                  placeholder="lien"
-                  disabled={enableInput}
-                /> */}
-                {!enableInput && <button>Valider</button>}
-              </InfoContent>
               <BsGearFill onClick={activeInput} />
             </InfoBlock>
           </MDBCol>
-          <MDBCol>One of three columns</MDBCol>
+          <MDBCol>
+            <Etapes projetId={selectedProjet} />
+          </MDBCol>
           <MDBCol>One of three columns</MDBCol>
           <MDBCol>One of three columns</MDBCol>
         </MDBRow>

@@ -96,6 +96,8 @@ const Dashboard = () => {
       clientDetailValue: clientDetail[0].val(),
       clientDetailId: clientDetail[0].key
     })
+
+    console.log('clientDetail[0].key', clientDetail[0].key)
   }
 
   const updateClentModel = e => {
@@ -141,7 +143,7 @@ const Dashboard = () => {
     return 0
   })
 
-  /// //////////////////////////////////////////////////////////////
+  /// Projets//////////////////////////////////////////////////////////////
 
   const updateProjetModel = e => {
     setProjetModel({
@@ -166,8 +168,6 @@ const Dashboard = () => {
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
       .on('child_added', async data => {
-        console.log('data===>>>===>>', data)
-
         setNewProjet(true)
       })
   }
@@ -184,7 +184,7 @@ const Dashboard = () => {
         if (data) {
           const item = await data
           list.push(item)
-          console.log('listPush', list)
+
           setListProjets(list)
         }
 
@@ -195,12 +195,14 @@ const Dashboard = () => {
       })
 
     setListProjets([])
+    setSelectedProjet({
+      projetValues: '',
+      projetId: ''
+    })
   }, [userClientDetail.clientDetailId, clientId, newProjet])
 
   const selectedDetail = id => {
     const selectedProjet = listProjets.filter(projet => projet.key === id)
-
-    console.log('selectedProjet', selectedProjet)
 
     setSelectedProjet({
       ...selectedProjet,
@@ -209,7 +211,7 @@ const Dashboard = () => {
     })
   }
 
-  /// ///////////////////////////////////////////////////////////////
+  /// //////////////////////////////////////////////////////////////
 
   return (
     <>
