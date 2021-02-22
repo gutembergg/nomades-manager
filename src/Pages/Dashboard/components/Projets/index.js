@@ -56,11 +56,10 @@ const Projets = ({ selectedProjet }) => {
               <BsGearFill onClick={activeInput} />
             </InfoBlock>
           </MDBCol>
-          <MDBCol>
-            <Etapes projetId={selectedProjet} />
+          <MDBCol style={{ background: '#000' }}>
+            <Etapes selectedProjet={selectedProjet} />
           </MDBCol>
-          <MDBCol>One of three columns</MDBCol>
-          <MDBCol>One of three columns</MDBCol>
+          <MDBCol>Firebase Storage</MDBCol>
         </MDBRow>
       </MDBContainer>
     </Container>

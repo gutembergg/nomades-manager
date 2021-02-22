@@ -5,9 +5,9 @@ export const Container = styled.div`
   width: 300px;
   overflow-y: scroll;
 
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.2);
+  background: #000;
   padding: 10px;
 
   .client_list {

@@ -1,0 +1,8 @@
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  width: 14px;
+  height: 18px;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+}

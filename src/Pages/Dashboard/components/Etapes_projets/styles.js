@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import colors from '../../../../styles/colors'
 
 export const NavBarCreateStep = styled.div`
-  width: 295px;
+  width: 100%;
   background: #282828;
   border: none;
   color: #fff;

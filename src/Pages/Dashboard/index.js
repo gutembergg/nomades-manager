@@ -2,6 +2,8 @@ import React, { useEffect, useContext, useState } from 'react'
 import { FirebaseContext } from '../../services/Firebase/context'
 import { v4 as uuidv4 } from 'uuid'
 
+import NavBar from './components/NavBar'
+
 import { BsPlusCircle } from 'react-icons/bs'
 
 import AddClientForm from './components/AddFormClient'
@@ -215,6 +217,7 @@ const Dashboard = () => {
 
   return (
     <>
+      <NavBar />
       <Container>
         <UserName>Dashboard - {data}</UserName>
         <MDBContainer style={{ marginTop: '60px' }}>

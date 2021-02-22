@@ -21,7 +21,6 @@ const ClientDetail = ({
     setAddFormProjetsToggle(!addFormProjetsToggle)
   }
 
-  console.log('list', list)
   return (
     <Container>
       {userClientDetail.clientDetailId !== '' && (
