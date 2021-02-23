@@ -3,6 +3,7 @@ import { FirebaseContext } from '../../../../services/Firebase/context'
 import { BsPlusCircle } from 'react-icons/bs'
 import { MDBCollapse } from 'mdbreact'
 import EtapesCard from './Etapes_card'
+import EtapesList from './components/EtapesList'
 
 import { NavBarCreateStep, Input_block } from './styles'
 import './styles_css.css'
@@ -18,7 +19,6 @@ const Etapes = ({ selectedProjet }) => {
   })
   const [etapes, setEtapes] = useState([])
   const [projet_id, setProjet_id] = useState('')
-  const [activeEtape, setActiveEtape] = useState('')
   const [newEtape, setNewEtape] = useState('')
 
   const updateEtapeModel = useCallback(
@@ -41,13 +41,13 @@ const Etapes = ({ selectedProjet }) => {
         echeance: etapeModel.echeance,
         rappel: etapeModel.rappel
       })
+
       setNewEtape('added')
     },
     [etapeModel]
   )
 
   useEffect(() => {
-    console.log('========ADD NEW ETAPE====================')
     const etapesList = [...etapes]
     setProjet_id(selectedProjet.projetId)
 
@@ -58,11 +58,8 @@ const Etapes = ({ selectedProjet }) => {
         if (data) {
           const result = await data
           const etapeDate = await data.val().echeance
-          const etapeStatus = await data.val().status
-          setActiveEtape(etapeStatus)
 
           console.log('EmailNotifications', etapeDate)
-          console.log('etapeStatus', etapeStatus)
           etapesList.push(result)
 
           setEtapes(etapesList)
@@ -77,11 +74,11 @@ const Etapes = ({ selectedProjet }) => {
     setEtapes([])
   }, [selectedProjet.projetId, projet_id, newEtape])
 
+  const etapesFilter = etapes.filter(item => item.val().status === 'active')
+
   const toggleFrom = () => {
     setToggle(!toggle)
   }
-
-  console.log('activeEtape', activeEtape)
 
   return (
     <>
@@ -101,7 +98,7 @@ const Etapes = ({ selectedProjet }) => {
             cols="30"
             placeholder="description d'étape"
             className="input_projet"
-            /*  disabled={etapes.length > 0} */
+            disabled={etapesFilter.length === 1}
           ></textarea>
           échéance
           <input
@@ -110,7 +107,7 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.echeance}
             onChange={updateEtapeModel}
             className="input_projet"
-            /* disabled={etapes.length > 0} */
+            disabled={etapesFilter.length === 1}
           />
           rappel
           <input
@@ -119,17 +116,18 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.rappel}
             onChange={updateEtapeModel}
             className="input_projet"
-            /* disabled={etapes.length > 0} */
+            disabled={etapesFilter.length === 1}
           />
           <button
             type="submit"
             className="btn_etape"
-            /*  disabled={etapes.length > 0} */
+            disabled={etapesFilter.length === 1}
           >
             Valider
           </button>
         </Input_block>
       </MDBCollapse>
+      <EtapesList list={etapes} />
     </>
   )
 }

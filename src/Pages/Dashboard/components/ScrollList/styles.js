@@ -12,6 +12,7 @@ export const Container = styled.div`
 
   .client_list {
     list-style: none;
+    cursor: pointer;
   }
   h2 {
     color: #fff;

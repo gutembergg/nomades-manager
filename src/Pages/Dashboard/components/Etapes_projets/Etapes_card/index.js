@@ -39,8 +39,6 @@ const EtapesCard = ({ etapes, projet_id }) => {
 
     const etapesFilter = etapes.filter(item => item.val().status === 'active')
 
-    console.log('etapesFilter', etapesFilter)
-
     setSteps(etapesFilter)
 
     etapes.map(async etape => {

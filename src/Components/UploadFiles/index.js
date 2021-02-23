@@ -1,5 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { FirebaseContext } from '../../services/Firebase/context'
+import Dropzone from 'react-dropzone'
+
+import { DropContainer, UploadMessage } from './styles'
 
 const UploadFiles = ({ projetId }) => {
   const firebase = useContext(FirebaseContext)
@@ -50,10 +53,38 @@ const UploadFiles = ({ projetId }) => {
     )
   }
 
+  const uploadMessage = (isDragActive, isDragReject) => {
+    if (!isDragActive) {
+      return <UploadMessage>deplacer vous fichiers ici</UploadMessage>
+    }
+    if (isDragReject) {
+      return (
+        <UploadMessage type="error">Fichier n'est pas supporté</UploadMessage>
+      )
+    }
+    return (
+      <UploadMessage type="success">Laissez ici vous fichiers</UploadMessage>
+    )
+  }
+
   return (
     <div>
       <input onChange={handleChange} type="file" />
       <button onClick={uploadFile}>Upload Files</button>
+      <div>
+        <Dropzone accept="image/*" onDropAccepted={() => {}}>
+          {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
+            <DropContainer
+              {...getRootProps()}
+              isDragActive={isDragActive}
+              isDragReject={isDragReject}
+            >
+              <input {...getInputProps()} />
+              {uploadMessage(isDragActive, isDragReject)}
+            </DropContainer>
+          )}
+        </Dropzone>
+      </div>
     </div>
   )
 }

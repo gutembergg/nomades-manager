@@ -25,6 +25,7 @@ export const AddClientFormTitle = styled.div`
 
   padding-left: 10px;
   margin-top: 20px;
+  cursor: pointer;
 
   .icon_plus {
     margin-right: 5px;
