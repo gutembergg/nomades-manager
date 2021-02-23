@@ -38,8 +38,7 @@ const Signup = () => {
         .then(authUser => {
           if (authUser) {
             firebase.database().ref(`users/${authUser.user.uid}`).set({
-              name: model.name,
-              email: model.email
+              name: model.name
             })
           }
         })

@@ -79,11 +79,12 @@ const Dashboard = () => {
               setListClients(list)
             }
           })
+
+        const uid = firebase.auth().currentUser.uid
+        setUserId(uid)
       } else {
         console.log('not user')
       }
-      const uid = firebase.auth().currentUser.uid
-      setUserId(uid)
 
       firebase.database().ref(`users/${user.uid}`).off('child_added', listener)
     })

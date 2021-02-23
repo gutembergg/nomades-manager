@@ -14,7 +14,22 @@ const EmailNotifications = ({ etapes }) => {
     message: 'Echeances !!!!!!!!!!!!',
     reply_to: userEmail
   }
+  /*
+  const getEtapesEcheance = async () => {
+    const firebaseRef = await firebase.database().ref('projetEtapes').get()
 
+    console.log('firebaseRef', firebaseRef)
+     return firebaseRef.child.map(doc => console.log('getDATA', doc))
+  }
+
+  getEtapesEcheance() */
+
+  /* firebaseRef.on('value', snapshot => {
+    const data = snapshot.val()
+    console.log('DATA', data)
+  })
+  console.log('firebaseRef', firebaseRef)
+ */
   useEffect(() => {
     getEcheance(etapes[0].val().echeance, sendEmail)
   }, [])

@@ -18,6 +18,8 @@ const Etapes = ({ selectedProjet }) => {
   })
   const [etapes, setEtapes] = useState([])
   const [projet_id, setProjet_id] = useState('')
+  const [activeEtape, setActiveEtape] = useState('')
+  const [newEtape, setNewEtape] = useState('')
 
   const updateEtapeModel = useCallback(
     e => {
@@ -39,11 +41,13 @@ const Etapes = ({ selectedProjet }) => {
         echeance: etapeModel.echeance,
         rappel: etapeModel.rappel
       })
+      setNewEtape('added')
     },
     [etapeModel]
   )
 
   useEffect(() => {
+    console.log('========ADD NEW ETAPE====================')
     const etapesList = [...etapes]
     setProjet_id(selectedProjet.projetId)
 
@@ -54,8 +58,11 @@ const Etapes = ({ selectedProjet }) => {
         if (data) {
           const result = await data
           const etapeDate = await data.val().echeance
+          const etapeStatus = await data.val().status
+          setActiveEtape(etapeStatus)
 
           console.log('EmailNotifications', etapeDate)
+          console.log('etapeStatus', etapeStatus)
           etapesList.push(result)
 
           setEtapes(etapesList)
@@ -68,17 +75,17 @@ const Etapes = ({ selectedProjet }) => {
       })
 
     setEtapes([])
-  }, [selectedProjet.projetId, projet_id])
+  }, [selectedProjet.projetId, projet_id, newEtape])
 
   const toggleFrom = () => {
     setToggle(!toggle)
   }
 
+  console.log('activeEtape', activeEtape)
+
   return (
     <>
-      {etapes.length !== 0 && (
-        <EtapesCard etapes={etapes} projet_id={projet_id} />
-      )}
+      <EtapesCard etapes={etapes} projet_id={projet_id} />
 
       <NavBarCreateStep onClick={toggleFrom}>
         <BsPlusCircle className="icon_etape" />
@@ -94,7 +101,7 @@ const Etapes = ({ selectedProjet }) => {
             cols="30"
             placeholder="description d'étape"
             className="input_projet"
-            disabled={etapes.length > 0}
+            /*  disabled={etapes.length > 0} */
           ></textarea>
           échéance
           <input
@@ -103,7 +110,7 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.echeance}
             onChange={updateEtapeModel}
             className="input_projet"
-            disabled={etapes.length > 0}
+            /* disabled={etapes.length > 0} */
           />
           rappel
           <input
@@ -112,12 +119,12 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.rappel}
             onChange={updateEtapeModel}
             className="input_projet"
-            disabled={etapes.length > 0}
+            /* disabled={etapes.length > 0} */
           />
           <button
             type="submit"
             className="btn_etape"
-            disabled={etapes.length > 0}
+            /*  disabled={etapes.length > 0} */
           >
             Valider
           </button>

@@ -1,14 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Switch from 'react-switch'
 import { FirebaseContext } from '../../../../../services/Firebase/context'
-import EmailNotifications from '../Email_notifications'
 
-import { EtapeTitle, Title, StatusBar } from './styles'
+import {
+  EtapeTitle,
+  Title,
+  StatusBar,
+  DescriptionEtape,
+  Button
+} from './styles'
 
 const EtapesCard = ({ etapes, projet_id }) => {
   const firebase = useContext(FirebaseContext)
 
+  const [steps, setSteps] = useState([])
   const [switchComponent, setSwitchComponent] = useState(false)
+  const [projetId, setProjetId] = useState('')
 
   const onChangeStatus = id => {
     firebase
@@ -20,45 +27,79 @@ const EtapesCard = ({ etapes, projet_id }) => {
     setSwitchComponent(!switchComponent)
   }
 
+  const validerEtape = id => {
+    firebase.database().ref(`projetEtapes/${projet_id}/${id}`).update({
+      status: 'valide'
+    })
+    setProjetId(projet_id)
+  }
+
   useEffect(() => {
+    setProjetId(projet_id)
+
+    const etapesFilter = etapes.filter(item => item.val().status === 'active')
+
+    console.log('etapesFilter', etapesFilter)
+
+    setSteps(etapesFilter)
+
     etapes.map(async etape => {
-      if (etape.val().status === 'active') {
+      if ((await etape.val().status) === 'active') {
         setSwitchComponent(true)
       } else {
         setSwitchComponent(false)
       }
     })
-  }, [etapes])
+
+    setSteps([])
+    console.log('list', steps)
+  }, [etapes, projetId, projet_id])
+
+  console.log('STEPS', steps)
 
   return (
     <div style={{ color: '#fff' }}>
       <div>
-        <EtapeTitle>
-          <Title>Étape 1</Title>
+        <>
+          <EtapeTitle>
+            <Title>Étape</Title>
 
-          {etapes.map(item => (
-            <StatusBar style={{ marginRight: '7px' }} key={item.key}>
-              <span style={{ marginRight: '7px' }}>
-                {switchComponent ? 'Active' : 'En arret'}
-              </span>
+            {etapes.map(
+              item =>
+                item.val().status === 'active' && (
+                  <div key={item.key}>
+                    <StatusBar style={{ marginRight: '7px' }}>
+                      <span style={{ marginRight: '7px' }}>
+                        {switchComponent ? 'Active' : 'En arret'}
+                      </span>
 
-              <Switch
-                height={25}
-                onColor="#00e676"
-                onChange={() => onChangeStatus(item.key)}
-                checked={switchComponent}
-              />
-            </StatusBar>
-          ))}
-        </EtapeTitle>
+                      <Switch
+                        height={25}
+                        onColor="#00e676"
+                        onChange={() => onChangeStatus(item.key)}
+                        checked={switchComponent}
+                      />
+                    </StatusBar>
+                  </div>
+                )
+            )}
+          </EtapeTitle>
 
-        <ul>
-          {etapes.map(item => (
-            <li key={item.key}>{item.val().description}</li>
-          ))}
-        </ul>
+          <DescriptionEtape>
+            {etapes.map(
+              item =>
+                item.val().status === 'active' && (
+                  <div key={item.key}>
+                    <div>{item.val().description}</div>
+                    <Button onClick={() => validerEtape(item.key)}>
+                      Valider Étape
+                    </Button>
+                  </div>
+                )
+            )}
+          </DescriptionEtape>
+        </>
       </div>
-      <EmailNotifications etapes={etapes} />
     </div>
   )
 }

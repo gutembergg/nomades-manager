@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 import { BsGearFill } from 'react-icons/bs'
 import Etapes from '../Etapes_projets'
+import UploadFiles from '../../../../Components/UploadFiles'
 
 import { Container, InfoContent, InfoBlock, FormUpdate } from './styles'
 
@@ -56,10 +57,12 @@ const Projets = ({ selectedProjet }) => {
               <BsGearFill onClick={activeInput} />
             </InfoBlock>
           </MDBCol>
-          <MDBCol style={{ background: '#000' }}>
+          <MDBCol>
             <Etapes selectedProjet={selectedProjet} />
           </MDBCol>
-          <MDBCol>Firebase Storage</MDBCol>
+          <MDBCol>
+            <UploadFiles projetId={selectedProjet.projetId} />
+          </MDBCol>
         </MDBRow>
       </MDBContainer>
     </Container>

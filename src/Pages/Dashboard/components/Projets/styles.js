@@ -12,6 +12,11 @@ export const InfoContent = styled.div`
   display: flex;
   flex-direction: column;
   color: #fff;
+  background: #000;
+  padding: 10px;
+
+  border: 1px solid #000;
+  border-radius: 3px;
 
   .btn_update {
     background: ${colors.green};
