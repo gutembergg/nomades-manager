@@ -47,3 +47,12 @@ export const FormUpdate = styled.form`
     background: ${colors.green};
   }
 `
+
+export const TitleProjet = styled.h4`
+  width: 100%;
+  display: flex;
+  color: #fff;
+  margin-bottom: 30px;
+
+  border-bottom: 1px solid ${colors.gray};
+`

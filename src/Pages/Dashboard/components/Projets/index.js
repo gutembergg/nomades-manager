@@ -5,7 +5,13 @@ import Etapes from '../Etapes_projets'
 import UploadFiles from '../../../../Components/UploadFiles'
 import Decisions from '../Decisions'
 
-import { Container, InfoContent, InfoBlock, FormUpdate } from './styles'
+import {
+  Container,
+  InfoContent,
+  InfoBlock,
+  FormUpdate,
+  TitleProjet
+} from './styles'
 
 const Projets = ({ selectedProjet }) => {
   const [enableInput, setEnableInput] = useState(false)
@@ -17,6 +23,7 @@ const Projets = ({ selectedProjet }) => {
   return (
     <Container>
       <MDBContainer>
+        <TitleProjet>Projets</TitleProjet>
         <MDBRow>
           <MDBCol>
             <InfoBlock>

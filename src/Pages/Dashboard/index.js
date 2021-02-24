@@ -117,8 +117,6 @@ const Dashboard = () => {
       clientDetailValue: clientDetail[0].val(),
       clientDetailId: clientDetail[0].key
     })
-
-    console.log('clientDetail[0].key', clientDetail[0].key)
   }
 
   const updateClentModel = e => {
