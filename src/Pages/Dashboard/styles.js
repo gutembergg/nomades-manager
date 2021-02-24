@@ -1,8 +1,8 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import colors from '../../styles/colors'
 
 export const Container = styled.div`
-  height: 150vh;
+  height: 200vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,4 +42,26 @@ export const ClientInfos = styled.div`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+`
+
+export const NotClientSelectedText = styled.div`
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-top: 80px;
+
+  border: 1px solid #282828;
+
+  ${props =>
+    props.width &&
+    css`
+      width: ${props.width};
+    `}
+`
+
+export const NotClientText = styled.p`
+  margin-top: 20px;
 `

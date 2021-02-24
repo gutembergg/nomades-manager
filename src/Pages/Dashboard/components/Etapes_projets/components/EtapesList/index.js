@@ -13,7 +13,7 @@ const EtapesList = ({ list }) => {
   return (
     <>
       <StepListButton onClick={listToggle}>
-        <BsCardList className="icon_plus" /> List étapes
+        <BsCardList className="icon_plus" /> Liste étapes
       </StepListButton>
       <MDBCollapse isOpen={toggle}>
         <StepList>

@@ -5,6 +5,10 @@ export const Container = styled.div`
   width: 100%;
   max-width: 1200px;
   margin-top: 90px;
+
+  .history_block {
+    margin-top: 40px;
+  }
 `
 
 export const InfoContent = styled.div`

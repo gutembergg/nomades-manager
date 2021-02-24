@@ -13,7 +13,6 @@ import {
 const EtapesCard = ({ etapes, projet_id }) => {
   const firebase = useContext(FirebaseContext)
 
-  const [steps, setSteps] = useState([])
   const [switchComponent, setSwitchComponent] = useState(false)
   const [projetId, setProjetId] = useState('')
 
@@ -37,9 +36,9 @@ const EtapesCard = ({ etapes, projet_id }) => {
   useEffect(() => {
     setProjetId(projet_id)
 
-    const etapesFilter = etapes.filter(item => item.val().status === 'active')
+    /*    const etapesFilter = etapes.filter(item => item.val().status === 'active')
 
-    setSteps(etapesFilter)
+    setSteps(etapesFilter) */
 
     etapes.map(async etape => {
       if ((await etape.val().status) === 'active') {
@@ -49,11 +48,10 @@ const EtapesCard = ({ etapes, projet_id }) => {
       }
     })
 
-    setSteps([])
-    console.log('list', steps)
+    /*  setSteps([]) */
   }, [etapes, projetId, projet_id])
 
-  console.log('STEPS', steps)
+  /* console.log('STEPS', steps) */
 
   return (
     <div style={{ color: '#fff' }}>

@@ -3,6 +3,7 @@ import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 import { BsGearFill } from 'react-icons/bs'
 import Etapes from '../Etapes_projets'
 import UploadFiles from '../../../../Components/UploadFiles'
+import Decisions from '../Decisions'
 
 import { Container, InfoContent, InfoBlock, FormUpdate } from './styles'
 
@@ -63,6 +64,14 @@ const Projets = ({ selectedProjet }) => {
           <MDBCol>
             <UploadFiles projetId={selectedProjet.projetId} />
           </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+      <MDBContainer>
+        <MDBRow className="history_block">
+          <MDBCol size="4">
+            <Decisions selectedProjet={selectedProjet} />
+          </MDBCol>
+          <MDBCol size="4">ZOOM</MDBCol>
         </MDBRow>
       </MDBContainer>
     </Container>

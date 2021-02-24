@@ -1,37 +1,48 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { FirebaseContext } from '../../services/Firebase/context'
 import Dropzone from 'react-dropzone'
+import UploadList from '../UploadList'
 
 import { DropContainer, UploadMessage } from './styles'
 
 const UploadFiles = ({ projetId }) => {
   const firebase = useContext(FirebaseContext)
-  const [selectedFile, setSelectedFile] = useState(null)
 
-  console.log('selectedProjet===========================', projetId)
-
-  const handleChange = e => {
-    console.log('ONchange', e.target.files[0])
-    if (e.target.files[0]) {
-      setSelectedFile(e.target.files[0])
-    }
-  }
+  const [projetID, setProjetID] = useState('')
+  const [filesData, setFilesData] = useState([])
+  const [newProject, setNewProject] = useState('')
 
   const postLinkFile = (url, fileName) => {
     console.log('fileName', fileName)
+
     firebase.database().ref(`projetFiles/${projetId}`).push({
       urlFile: url,
       fileName: fileName
     })
+
+    /*  firebase
+      .database()
+      .ref(`projetFiles/${projetId}`)
+      .on('child_added', async data => {
+        const fileObject = {
+          fileKey: await data.key,
+          fileName: await data.val().fileName,
+          fileURL: await data.val().urlFile
+        }
+
+        filesList.push(fileObject)
+
+        console.log('filesList22222222', filesList)
+        setUpdateListFiles(filesList)
+
+        firebase.database().ref(`projetFiles/${projetId}`).off('child_added')
+      }) */
   }
 
-  const uploadFile = () => {
+  const uploadFile = files => {
     const storage = firebase.storage()
-    console.log('storage', storage)
 
-    const selectedRef = storage
-      .ref(`files/${selectedFile.name}`)
-      .put(selectedFile)
+    const selectedRef = storage.ref(`files/${files[0].name}`).put(files[0])
 
     selectedRef.on(
       'state_changed',
@@ -42,20 +53,45 @@ const UploadFiles = ({ projetId }) => {
       () => {
         storage
           .ref('files')
-          .child(selectedFile.name)
+          .child(files[0].name)
           .getDownloadURL()
           .then(URL => {
             if (URL) {
-              postLinkFile(URL, selectedFile.name)
+              postLinkFile(URL, files[0].name)
             }
           })
       }
     )
+    setNewProject('addProject')
   }
+
+  useEffect(() => {
+    const filesList = [...filesData]
+    setProjetID(projetId)
+    setNewProject('useEffect')
+    firebase
+      .database()
+      .ref(`projetFiles/${projetId}`)
+      .on('child_added', async data => {
+        const fileObject = {
+          fileKey: await data.key,
+          fileName: await data.val().fileName,
+          fileURL: await data.val().urlFile
+        }
+
+        filesList.push(fileObject)
+
+        setFilesData(filesList)
+
+        firebase.database().ref(`projetFiles/${projetId}`).off('child_added')
+      })
+
+    setFilesData([])
+  }, [projetId, projetID, newProject])
 
   const uploadMessage = (isDragActive, isDragReject) => {
     if (!isDragActive) {
-      return <UploadMessage>deplacer vous fichiers ici</UploadMessage>
+      return <UploadMessage>Deplacer vous fichiers ici</UploadMessage>
     }
     if (isDragReject) {
       return (
@@ -69,10 +105,8 @@ const UploadFiles = ({ projetId }) => {
 
   return (
     <div>
-      <input onChange={handleChange} type="file" />
-      <button onClick={uploadFile}>Upload Files</button>
       <div>
-        <Dropzone accept="image/*" onDropAccepted={() => {}}>
+        <Dropzone accept="image/*" onDropAccepted={uploadFile}>
           {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
             <DropContainer
               {...getRootProps()}
@@ -85,6 +119,7 @@ const UploadFiles = ({ projetId }) => {
           )}
         </Dropzone>
       </div>
+      <UploadList files={filesData} />
     </div>
   )
 }

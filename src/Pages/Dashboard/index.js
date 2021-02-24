@@ -17,7 +17,9 @@ import {
   AddClientFormTitle,
   ClientCollapse,
   ClientInfos,
-  UserName
+  UserName,
+  NotClientSelectedText,
+  NotClientText
 } from './styles'
 import Projets from './components/Projets'
 
@@ -57,7 +59,7 @@ const Dashboard = () => {
   useEffect(() => {
     const list = [...listClients]
 
-    const listener = firebase.auth().onAuthStateChanged(user => {
+    const listener = firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         firebase
           .database()
@@ -82,6 +84,22 @@ const Dashboard = () => {
 
         const uid = firebase.auth().currentUser.uid
         setUserId(uid)
+
+        /* const etapesRef = await firebase
+          .database()
+          .ref('projetEtapes')
+          .orderByKey()
+        console.log('etapesRef', etapesRef)
+        etapesRef.on('value', snapshot => {
+          console.log('childKey===================')
+          snapshot.forEach(childSnapshot => {
+            const childKey = childSnapshot.key
+            const childData = childSnapshot.val()
+
+            console.log('childKey===================', childKey)
+            console.log('childData', childData)
+          })
+        }) */
       } else {
         console.log('not user')
       }
@@ -178,7 +196,6 @@ const Dashboard = () => {
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
     const list = [...listProjets]
-    console.log('useEFE=====================================', list)
 
     firebase
       .database()
@@ -213,7 +230,7 @@ const Dashboard = () => {
       projetId: selectedProjet[0].key
     })
   }
-
+  console.log('userClientDetail', userClientDetail.clientDetailId)
   /// //////////////////////////////////////////////////////////////
 
   return (
@@ -248,21 +265,35 @@ const Dashboard = () => {
             </MDBCol>
             <MDBCol size="6">
               <div style={{ marginLeft: '150px' }}>
-                <ClientDetail
-                  updateProjetModel={updateProjetModel}
-                  projetModel={projetModel}
-                  handleSubmit={handleSubmit}
-                  userClientDetail={userClientDetail}
-                  title="Projets"
-                  list={listProjets}
-                  info={userClientDetail.clientDetailValue.name}
-                  selectedDetail={selectedDetail}
-                />
+                {userClientDetail.clientDetailId !== '' ? (
+                  <ClientDetail
+                    updateProjetModel={updateProjetModel}
+                    projetModel={projetModel}
+                    handleSubmit={handleSubmit}
+                    userClientDetail={userClientDetail}
+                    title="Projets"
+                    list={listProjets}
+                    info={userClientDetail.clientDetailValue.name}
+                    selectedDetail={selectedDetail}
+                  />
+                ) : (
+                  <NotClientSelectedText>
+                    <NotClientText> Aucun client selectionné</NotClientText>
+                  </NotClientSelectedText>
+                )}
               </div>
             </MDBCol>
           </MDBRow>
         </MDBContainer>
-        <Projets selectedProjet={selectedProjet} />
+        <>
+          {selectedProjet.projetId !== '' ? (
+            <Projets selectedProjet={selectedProjet} />
+          ) : (
+            <NotClientSelectedText width="400px">
+              <NotClientText> Aucun projet selectionné</NotClientText>
+            </NotClientSelectedText>
+          )}
+        </>
       </Container>
     </>
   )
