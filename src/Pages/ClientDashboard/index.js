@@ -42,6 +42,21 @@ const ClientDashboard = () => {
 
   console.log('selectedPjtDetail', selectedPjtDetail)
 
+  /*  const getClientCode = async () => {
+    const clientsRef = await firebase.database().ref('userClients')
+
+    clientsRef.on('value', snapshot => {
+      console.log('childKey===================')
+      snapshot.forEach(childSnapshot => {
+        const childKey = childSnapshot.key
+        const childData = childSnapshot.val()
+
+        console.log('childKey===================', childKey)
+        console.log('childData', childData)
+      })
+    })
+  } */
+
   return (
     <Container>
       <NavBar>

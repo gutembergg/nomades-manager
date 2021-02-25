@@ -57,10 +57,12 @@ const Dashboard = () => {
   const [newProjet, setNewProjet] = useState(false)
 
   useEffect(() => {
-    const list = [...listClients]
+    console.log('LIG61=======')
 
-    const listener = firebase.auth().onAuthStateChanged(async user => {
+    firebase.auth().onAuthStateChanged(async user => {
+      console.log('Pas connecté=================')
       if (user) {
+        const list = []
         firebase
           .database()
           .ref(`users/${user.uid}`)
@@ -84,29 +86,27 @@ const Dashboard = () => {
 
         const uid = firebase.auth().currentUser.uid
         setUserId(uid)
-
-        /* const etapesRef = await firebase
+        /*  firebase
           .database()
           .ref('projetEtapes')
-          .orderByKey()
-        console.log('etapesRef', etapesRef)
-        etapesRef.on('value', snapshot => {
-          console.log('childKey===================')
-          snapshot.forEach(childSnapshot => {
-            const childKey = childSnapshot.key
-            const childData = childSnapshot.val()
+          .on('child_added', snapshot => {
+            console.log('childKey=')
+            snapshot.forEach(childSnapshot => {
+              const childKey = childSnapshot.key
+              const childData = childSnapshot.val().echeance
 
-            console.log('childKey===================', childKey)
-            console.log('childData', childData)
-          })
-        }) */
+              console.log('childKey===================', childKey)
+              console.log('childData', childData)
+            })
+          }) */
       } else {
-        console.log('not user')
+        console.log('ESLE====>>>>')
+        firebase.database().ref(`users/${user.uid}`).off('child_added')
+        firebase.database().ref(`userClients/${userId}`).off('child_added')
+        firebase.database().ref('projetEtapes').off('child_added')
       }
-
-      firebase.database().ref(`users/${user.uid}`).off('child_added', listener)
     })
-  }, [userId, data])
+  }, [data, userId])
 
   // select client detail ///////////////////////////////////////////
   const selectClient = id => {
@@ -186,7 +186,7 @@ const Dashboard = () => {
     firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-      .on('child_added', async data => {
+      .once('child_added', async data => {
         setNewProjet(true)
       })
   }
@@ -228,7 +228,6 @@ const Dashboard = () => {
       projetId: selectedProjet[0].key
     })
   }
-  console.log('userClientDetail', userClientDetail.clientDetailId)
   /// //////////////////////////////////////////////////////////////
 
   return (
