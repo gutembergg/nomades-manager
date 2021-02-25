@@ -62,51 +62,36 @@ const Dashboard = () => {
     firebase.auth().onAuthStateChanged(async user => {
       console.log('Pas connecté=================')
       if (user) {
-        const list = []
         firebase
           .database()
           .ref(`users/${user.uid}`)
           .on('value', snap => {
             const userVal = snap.val()
-            console.log('snap', userVal.name)
             setData(userVal.name)
-          })
-
-        firebase
-          .database()
-          .ref(`userClients/${user.uid}`)
-          .on('child_added', async data => {
-            if (data) {
-              const result = await data
-              list.push(result)
-
-              setListClients(list)
-            }
           })
 
         const uid = firebase.auth().currentUser.uid
         setUserId(uid)
-        /*  firebase
-          .database()
-          .ref('projetEtapes')
-          .on('child_added', snapshot => {
-            console.log('childKey=')
-            snapshot.forEach(childSnapshot => {
-              const childKey = childSnapshot.key
-              const childData = childSnapshot.val().echeance
-
-              console.log('childKey===================', childKey)
-              console.log('childData', childData)
-            })
-          }) */
       } else {
-        console.log('ESLE====>>>>')
         firebase.database().ref(`users/${user.uid}`).off('child_added')
-        firebase.database().ref(`userClients/${userId}`).off('child_added')
-        firebase.database().ref('projetEtapes').off('child_added')
       }
     })
-  }, [data, userId])
+  }, [])
+
+  useEffect(() => {
+    const listClients2 = []
+    firebase
+      .database()
+      .ref(`userClients/${userId}`)
+      .on('child_added', data => {
+        if (data) {
+          listClients2.push(data)
+          setListClients(listClients2)
+        } else {
+          firebase.database().ref(`users/${userId}`).off('child_added')
+        }
+      })
+  }, [userId, data])
 
   // select client detail ///////////////////////////////////////////
   const selectClient = id => {

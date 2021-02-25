@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Switch from 'react-switch'
 import { FirebaseContext } from '../../../../../services/Firebase/context'
 
@@ -10,16 +10,19 @@ import {
   Button
 } from './styles'
 
-const EtapesCard = ({ etapes, projet_id }) => {
+const EtapesCard = ({ selectedProjet }) => {
   const firebase = useContext(FirebaseContext)
 
+  const [steps, setSteps] = useState([])
   const [switchComponent, setSwitchComponent] = useState(false)
   const [projetId, setProjetId] = useState('')
+
+  console.log('projet_id', selectedProjet.projetValues?.description)
 
   const onChangeStatus = id => {
     firebase
       .database()
-      .ref(`projetEtapes/${projet_id}/${id}`)
+      .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
       .update({
         status: switchComponent ? 'stopped' : 'active'
       })
@@ -27,31 +30,72 @@ const EtapesCard = ({ etapes, projet_id }) => {
   }
 
   const validerEtape = id => {
-    firebase.database().ref(`projetEtapes/${projet_id}/${id}`).update({
-      status: 'valide'
-    })
-    setProjetId(projet_id)
+    const list = []
+    firebase
+      .database()
+      .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
+      .update({
+        status: 'valide'
+      })
+
+    firebase
+      .database()
+      .ref(`projetEtapes/${selectedProjet.projetId}`)
+      .once('child_added', async data => {
+        const result = await data
+        list.push(result)
+        console.log('(//////////////)))))))))', list)
+      })
   }
+  /// 0000000000000000000000000000000000000000000000000000000000
+  firebase
+    .database()
+    .ref(`projetEtapes/${selectedProjet.projetId}`)
+    .on('child_changed', data => {
+      if (data) {
+        console.log('child_changed', data.val().description)
+      }
+      firebase
+        .database()
+        .ref(`projetEtapes/${selectedProjet.projetId}`)
+        .off('child_changed')
+    })
+
+  /// 0000000000000000000000000000000000000000000000000000000000
 
   useEffect(() => {
-    setProjetId(projet_id)
+    setProjetId(selectedProjet.projetId)
+    const list = []
 
-    /*    const etapesFilter = etapes.filter(item => item.val().status === 'active')
+    const listener = firebase
+      .database()
+      .ref(`projetEtapes/${selectedProjet.projetId}`)
+      .on('child_added', async data => {
+        console.log('DDDAAATTTAA', data.val())
+        if (data) {
+          const result = await data
+          list.push(result)
 
-    setSteps(etapesFilter) */
+          setSteps(list)
+        }
+        firebase
+          .database()
+          .ref(`projetEtapes/${selectedProjet.projetId}`)
+          .off('child_added', listener)
+      })
 
-    etapes.map(async etape => {
+    steps.map(async etape => {
       if ((await etape.val().status) === 'active') {
         setSwitchComponent(true)
-      } else {
-        setSwitchComponent(false)
       }
     })
-
-    /*  setSteps([]) */
-  }, [etapes, projetId, projet_id])
-
-  /* console.log('STEPS', steps) */
+    return () => {
+      firebase
+        .database()
+        .ref(`projetEtapes/${selectedProjet.projetId}`)
+        .off('child_added', listener)
+    }
+  }, [projetId, selectedProjet.projetId])
 
   return (
     <div style={{ color: '#fff' }}>
@@ -60,9 +104,9 @@ const EtapesCard = ({ etapes, projet_id }) => {
           <EtapeTitle>
             <Title>Étape</Title>
 
-            {etapes.map(
+            {steps.map(
               item =>
-                item.val().status === 'active' && (
+                item.val().status !== 'valide' && (
                   <div key={item.key}>
                     <StatusBar style={{ marginRight: '7px' }}>
                       <span style={{ marginRight: '7px' }}>
@@ -82,7 +126,7 @@ const EtapesCard = ({ etapes, projet_id }) => {
           </EtapeTitle>
 
           <DescriptionEtape>
-            {etapes.map(
+            {steps.map(
               item =>
                 item.val().status === 'active' && (
                   <div key={item.key}>

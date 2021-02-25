@@ -32,8 +32,6 @@ const Decisions = ({ selectedProjet }) => {
     console.log('gggg', e.target.value)
   }
 
-  console.log('decision7////', decision)
-
   const handleSubmit = e => {
     e.preventDefault()
 
@@ -81,7 +79,6 @@ const Decisions = ({ selectedProjet }) => {
         list.push(decisionObject)
 
         setListDecision(list)
-        console.log('kkkkk////k', data)
 
         firebase
           .database()
@@ -91,9 +88,6 @@ const Decisions = ({ selectedProjet }) => {
 
     setListDecision([])
   }, [selectedProjet.projetId, projectId, newPeoject])
-
-  console.log('===>>>>>>>>>>', listDecisions.length)
-
   const toggleList = () => {
     setToggle(!toggle)
   }

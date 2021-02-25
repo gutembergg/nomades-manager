@@ -57,9 +57,8 @@ const Etapes = ({ selectedProjet }) => {
       .on('child_added', async data => {
         if (data) {
           const result = await data
-          const etapeDate = await data.val().echeance
+          /*  const etapeDate = await data.val().echeance */
 
-          console.log('EmailNotifications', etapeDate)
           etapesList.push(result)
 
           setEtapes(etapesList)
@@ -74,6 +73,8 @@ const Etapes = ({ selectedProjet }) => {
     setEtapes([])
   }, [selectedProjet.projetId, projet_id, newEtape])
 
+  console.log('///etapes///', etapes)
+
   const etapesFilter = etapes.filter(item => item.val().status === 'active')
 
   const toggleFrom = () => {
@@ -82,7 +83,7 @@ const Etapes = ({ selectedProjet }) => {
 
   return (
     <>
-      <EtapesCard etapes={etapes} projet_id={projet_id} />
+      <EtapesCard etapes={etapes} selectedProjet={selectedProjet} />
 
       <NavBarCreateStep onClick={toggleFrom}>
         <BsPlusCircle className="icon_etape" />
