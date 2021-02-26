@@ -76,10 +76,11 @@ const Dashboard = () => {
         firebase.database().ref(`users/${user.uid}`).off('child_added')
       }
     })
-  }, [])
+  }, [userId])
 
   useEffect(() => {
     const listClients2 = []
+    console.log('/////////////////=====///////////')
     firebase
       .database()
       .ref(`userClients/${userId}`)
@@ -159,14 +160,24 @@ const Dashboard = () => {
   const handleSubmit = e => {
     e.preventDefault()
 
+    const keyprojet = firebase.database().ref('clientProjets').push().key
+
+    console.log('keyprojet', keyprojet)
     firebase
       .database()
-      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-      .push({
+      .ref(`clientProjets/${userClientDetail.clientDetailId}/${keyprojet}`)
+      .set({
         name: projetModel.name,
         description: projetModel.description,
         link: projetModel.link
       })
+
+    firebase.database().ref(`projetList/${keyprojet}`).set({
+      clientId: userClientDetail.clientDetailId,
+      name: projetModel.name,
+      description: projetModel.description,
+      link: projetModel.link
+    })
 
     firebase
       .database()

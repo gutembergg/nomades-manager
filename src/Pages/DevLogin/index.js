@@ -51,8 +51,6 @@ const DevLogin = () => {
           listProjetId.push(parentKey)
 
           setProjetsIDList(listProjetId)
-
-          console.log('listEtapesDepasse', listEtapesDepasse)
           firebase
             .database()
             .ref('clientProjets')

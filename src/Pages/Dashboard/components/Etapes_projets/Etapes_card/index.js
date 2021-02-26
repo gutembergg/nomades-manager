@@ -29,24 +29,21 @@ const EtapesCard = ({ selectedProjet }) => {
     setSwitchComponent(!switchComponent)
   }
 
+  /// Validate steps/////////////////////////////////////////
   const validerEtape = id => {
-    const list = []
     firebase
       .database()
       .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
-      .update({
-        status: 'valide'
-      })
-
-    firebase
-      .database()
-      .ref(`projetEtapes/${selectedProjet.projetId}`)
-      .once('child_added', async data => {
-        const result = await data
-        list.push(result)
-        console.log('(//////////////)))))))))', list)
-      })
+      .remove()
   }
+
+  firebase
+    .database()
+    .ref(`projetEtapes/${selectedProjet.projetId}`)
+    .once('child_moved', async data => {
+      const result = await data
+      console.log('(//////////////)))))))))', result)
+    })
   /// 0000000000000000000000000000000000000000000000000000000000
   firebase
     .database()
@@ -65,7 +62,6 @@ const EtapesCard = ({ selectedProjet }) => {
 
   useEffect(() => {
     setProjetId(selectedProjet.projetId)
-    const list = []
 
     const listener = firebase
       .database()
@@ -73,10 +69,18 @@ const EtapesCard = ({ selectedProjet }) => {
       .on('child_added', async data => {
         console.log('DDDAAATTTAA', data.val())
         if (data) {
-          const result = await data
-          list.push(result)
+          const result = {
+            etapeId: await data.key,
+            etapeValues: await data.val()
+          }
 
-          setSteps(list)
+          if (data.val().status === 'active') {
+            setSwitchComponent(true)
+          }
+
+          setSteps(result)
+
+          console.log('RESULT', result)
         }
         firebase
           .database()
@@ -84,11 +88,6 @@ const EtapesCard = ({ selectedProjet }) => {
           .off('child_added', listener)
       })
 
-    steps.map(async etape => {
-      if ((await etape.val().status) === 'active') {
-        setSwitchComponent(true)
-      }
-    })
     return () => {
       firebase
         .database()
@@ -97,48 +96,41 @@ const EtapesCard = ({ selectedProjet }) => {
     }
   }, [projetId, selectedProjet.projetId])
 
+  console.log('steps', steps)
+
   return (
     <div style={{ color: '#fff' }}>
       <div>
-        <>
-          <EtapeTitle>
-            <Title>Étape</Title>
+        {steps.length !== 0 && (
+          <>
+            <EtapeTitle>
+              <Title>Étape</Title>
+              <div>
+                <StatusBar style={{ marginRight: '7px' }}>
+                  <span style={{ marginRight: '7px' }}>
+                    {switchComponent ? 'Active' : 'En arret'}
+                  </span>
 
-            {steps.map(
-              item =>
-                item.val().status !== 'valide' && (
-                  <div key={item.key}>
-                    <StatusBar style={{ marginRight: '7px' }}>
-                      <span style={{ marginRight: '7px' }}>
-                        {switchComponent ? 'Active' : 'En arret'}
-                      </span>
+                  <Switch
+                    height={25}
+                    onColor="#00e676"
+                    onChange={() => onChangeStatus(selectedProjet.projetId)}
+                    checked={switchComponent}
+                  />
+                </StatusBar>
+              </div>
+            </EtapeTitle>
 
-                      <Switch
-                        height={25}
-                        onColor="#00e676"
-                        onChange={() => onChangeStatus(item.key)}
-                        checked={switchComponent}
-                      />
-                    </StatusBar>
-                  </div>
-                )
-            )}
-          </EtapeTitle>
-
-          <DescriptionEtape>
-            {steps.map(
-              item =>
-                item.val().status === 'active' && (
-                  <div key={item.key}>
-                    <div>{item.val().description}</div>
-                    <Button onClick={() => validerEtape(item.key)}>
-                      Valider Étape
-                    </Button>
-                  </div>
-                )
-            )}
-          </DescriptionEtape>
-        </>
+            <DescriptionEtape>
+              <div>
+                <div>{steps.etapeValues.description}</div>
+                <Button onClick={() => validerEtape(steps.etapeId)}>
+                  Valider Étape
+                </Button>
+              </div>
+            </DescriptionEtape>
+          </>
+        )}
       </div>
     </div>
   )

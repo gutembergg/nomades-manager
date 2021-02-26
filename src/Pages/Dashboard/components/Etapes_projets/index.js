@@ -1,10 +1,8 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import { FirebaseContext } from '../../../../services/Firebase/context'
 import { BsPlusCircle } from 'react-icons/bs'
 import { MDBCollapse } from 'mdbreact'
 import EtapesCard from './Etapes_card'
-import EtapesList from './components/EtapesList'
-
 import { NavBarCreateStep, Input_block } from './styles'
 import './styles_css.css'
 
@@ -17,9 +15,7 @@ const Etapes = ({ selectedProjet }) => {
     echeance: '',
     rappel: ''
   })
-  const [etapes, setEtapes] = useState([])
-  const [projet_id, setProjet_id] = useState('')
-  const [newEtape, setNewEtape] = useState('')
+  /*  const [projet_id, setProjet_id] = useState('') */
 
   const updateEtapeModel = useCallback(
     e => {
@@ -41,27 +37,22 @@ const Etapes = ({ selectedProjet }) => {
         echeance: etapeModel.echeance,
         rappel: etapeModel.rappel
       })
-
-      setNewEtape('added')
     },
     [etapeModel]
   )
 
-  useEffect(() => {
-    const etapesList = [...etapes]
+  /*  useEffect(() => {
     setProjet_id(selectedProjet.projetId)
 
     firebase
       .database()
       .ref(`projetEtapes/${selectedProjet.projetId}`)
-      .on('child_added', async data => {
+      .on('value', async data => {
         if (data) {
-          const result = await data
-          /*  const etapeDate = await data.val().echeance */
-
-          etapesList.push(result)
-
-          setEtapes(etapesList)
+          const result = await data.val()
+          setEtape(result)
+           const etapeDate = await data.val().echeance
+          console.log('result===', result)
         }
 
         firebase
@@ -69,13 +60,11 @@ const Etapes = ({ selectedProjet }) => {
           .ref(`projetEtapes/${selectedProjet.projetId}`)
           .off('child_added')
       })
+  }, [selectedProjet.projetId, projet_id, newEtape]) */
 
-    setEtapes([])
-  }, [selectedProjet.projetId, projet_id, newEtape])
-
-  console.log('///etapes///', etapes)
-
-  const etapesFilter = etapes.filter(item => item.val().status === 'active')
+  console.log('///etapes///')
+  /*
+  const etapesFilter = etapes.filter(item => item.val().status === 'active') */
 
   const toggleFrom = () => {
     setToggle(!toggle)
@@ -83,7 +72,7 @@ const Etapes = ({ selectedProjet }) => {
 
   return (
     <>
-      <EtapesCard etapes={etapes} selectedProjet={selectedProjet} />
+      <EtapesCard selectedProjet={selectedProjet} />
 
       <NavBarCreateStep onClick={toggleFrom}>
         <BsPlusCircle className="icon_etape" />
@@ -99,7 +88,7 @@ const Etapes = ({ selectedProjet }) => {
             cols="30"
             placeholder="description d'étape"
             className="input_projet"
-            disabled={etapesFilter.length === 1}
+            /* disabled={etapesFilter.length === 1} */
           ></textarea>
           échéance
           <input
@@ -108,7 +97,7 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.echeance}
             onChange={updateEtapeModel}
             className="input_projet"
-            disabled={etapesFilter.length === 1}
+            /*  disabled={etapesFilter.length === 1} */
           />
           rappel
           <input
@@ -117,18 +106,17 @@ const Etapes = ({ selectedProjet }) => {
             value={etapeModel.rappel}
             onChange={updateEtapeModel}
             className="input_projet"
-            disabled={etapesFilter.length === 1}
+            /* disabled={etapesFilter.length === 1} */
           />
           <button
             type="submit"
             className="btn_etape"
-            disabled={etapesFilter.length === 1}
+            /* disabled={etapesFilter.length === 1} */
           >
             Valider
           </button>
         </Input_block>
       </MDBCollapse>
-      <EtapesList list={etapes} />
     </>
   )
 }
