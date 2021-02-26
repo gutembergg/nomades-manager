@@ -54,6 +54,7 @@ const Dashboard = () => {
       projetId: ''
     }
   ])
+  const [newState, setNewState] = useState('')
   const [newProjet, setNewProjet] = useState(false)
 
   useEffect(() => {
@@ -73,12 +74,14 @@ const Dashboard = () => {
         const uid = firebase.auth().currentUser.uid
         setUserId(uid)
       } else {
-        firebase.database().ref(`users/${user.uid}`).off('child_added')
+        firebase.database().ref(`users/${userId}`).off('child_added')
       }
     })
   }, [userId])
 
   useEffect(() => {
+    setClientId(userClientDetail.clientDetailId)
+
     const listClients2 = []
     console.log('/////////////////=====///////////')
     firebase
@@ -92,18 +95,21 @@ const Dashboard = () => {
           firebase.database().ref(`users/${userId}`).off('child_added')
         }
       })
-  }, [userId, data])
+  }, [userId, data, newState])
 
   // select client detail ///////////////////////////////////////////
   const selectClient = id => {
     const clientDetail = listClients.filter(client => client.key === id)
 
+    console.log('selectClient', clientDetail)
     setUserClientsdetail({
       ...userClientDetail,
       clientDetailValue: clientDetail[0].val(),
       clientDetailId: clientDetail[0].key
     })
   }
+
+  console.log('clientDetail[0].key', userClientDetail)
 
   const updateClentModel = e => {
     setClientModel({
@@ -130,7 +136,7 @@ const Dashboard = () => {
       email: '',
       zoom: ''
     })
-
+    setNewState(true)
     setAddClentFormToggle(!addClentFormToggle)
   }
 
@@ -160,6 +166,10 @@ const Dashboard = () => {
   const handleSubmit = e => {
     e.preventDefault()
 
+    console.log(
+      'clientDetail===???===========================',
+      userClientDetail.clientDetailId
+    )
     const keyprojet = firebase.database().ref('clientProjets').push().key
 
     console.log('keyprojet', keyprojet)
@@ -183,20 +193,30 @@ const Dashboard = () => {
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
       .once('child_added', async data => {
-        setNewProjet(true)
+        if (data) {
+          setNewProjet(true)
+        }
       })
+
+    setProjetModel({
+      name: '',
+      description: '',
+      link: ''
+    })
   }
 
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
-    const list = [...listProjets]
 
+    const list = [...listProjets]
     firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
       .on('child_added', async data => {
         if (data) {
           const item = await data
+
+          console.log('DATA', data.val())
           list.push(item)
 
           setListProjets(list)
@@ -207,7 +227,6 @@ const Dashboard = () => {
           .ref(`clientProjets/${userClientDetail.clientDetailId}`)
           .off('child_added')
       })
-
     setListProjets([])
     setSelectedProjet({
       projetValues: '',
@@ -224,6 +243,8 @@ const Dashboard = () => {
       projetId: selectedProjet[0].key
     })
   }
+
+  console.log('listProjets==================', listProjets)
   /// //////////////////////////////////////////////////////////////
 
   return (

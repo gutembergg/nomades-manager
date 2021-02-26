@@ -16,18 +16,7 @@ const EtapesCard = ({ selectedProjet }) => {
   const [steps, setSteps] = useState([])
   const [switchComponent, setSwitchComponent] = useState(false)
   const [projetId, setProjetId] = useState('')
-
-  console.log('projet_id', selectedProjet.projetValues?.description)
-
-  const onChangeStatus = id => {
-    firebase
-      .database()
-      .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
-      .update({
-        status: switchComponent ? 'stopped' : 'active'
-      })
-    setSwitchComponent(!switchComponent)
-  }
+  const [validateEtape, setValidateEtape] = useState(false)
 
   /// Validate steps/////////////////////////////////////////
   const validerEtape = id => {
@@ -35,6 +24,8 @@ const EtapesCard = ({ selectedProjet }) => {
       .database()
       .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
       .remove()
+
+    setValidateEtape(true)
   }
 
   firebase
@@ -87,6 +78,7 @@ const EtapesCard = ({ selectedProjet }) => {
           .ref(`projetEtapes/${selectedProjet.projetId}`)
           .off('child_added', listener)
       })
+    setSteps('')
 
     return () => {
       firebase
@@ -96,12 +88,25 @@ const EtapesCard = ({ selectedProjet }) => {
     }
   }, [projetId, selectedProjet.projetId])
 
-  console.log('steps', steps)
+  const onChangeStatus = id => {
+    console.log('projet_id', selectedProjet.projetId)
+    console.log('ID====ID', id)
+
+    firebase
+      .database()
+      .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)
+      .update({
+        status: switchComponent ? 'stopped' : 'active'
+      })
+    setSwitchComponent(!switchComponent)
+  }
+
+  console.log('validateEtape==>', validateEtape)
 
   return (
     <div style={{ color: '#fff' }}>
       <div>
-        {steps.length !== 0 && (
+        {steps.length !== 0 && validateEtape === false ? (
           <>
             <EtapeTitle>
               <Title>Étape</Title>
@@ -114,7 +119,7 @@ const EtapesCard = ({ selectedProjet }) => {
                   <Switch
                     height={25}
                     onColor="#00e676"
-                    onChange={() => onChangeStatus(selectedProjet.projetId)}
+                    onChange={() => onChangeStatus(steps.etapeId)}
                     checked={switchComponent}
                   />
                 </StatusBar>
@@ -123,14 +128,14 @@ const EtapesCard = ({ selectedProjet }) => {
 
             <DescriptionEtape>
               <div>
-                <div>{steps.etapeValues.description}</div>
+                <div>{steps.etapeValues?.description}</div>
                 <Button onClick={() => validerEtape(steps.etapeId)}>
                   Valider Étape
                 </Button>
               </div>
             </DescriptionEtape>
           </>
-        )}
+        ) : null}
       </div>
     </div>
   )

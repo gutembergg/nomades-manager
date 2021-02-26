@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import { FirebaseContext } from '../../services/Firebase/context'
 import ListProjet from './components/ListProjets'
@@ -8,31 +9,18 @@ import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
 import { Container, NavBar, Image, Content } from './styles'
 
-const ClientDashboard = () => {
+const ClientDashboard = props => {
   const firebase = useContext(FirebaseContext)
+  console.log('firebase', firebase)
+  const location = useLocation()
+  const myparam = location.state.params
 
-  const [projetsData, setProjetsData] = useState([])
-  const [isData, setIsData] = useState(false)
+  console.log('MyParams', myparam)
+
+  const [projetsData] = useState([])
   const [selectedPjtDetail, setSelectedPjtDetail] = useState(null)
 
-  useEffect(() => {
-    setIsData(true)
-    const list = [...projetsData]
-    const uidClient = '-MUDf5G3JLL4-xYFrfpX'
-    firebase
-      .database()
-      .ref(`clientProjets/${uidClient}`)
-      .on('child_added', async data => {
-        const projetObject = {
-          projetKey: await data.key,
-          projetValues: await data.val()
-        }
-        list.push(projetObject)
-
-        setProjetsData(list)
-        console.log('ClientDash==============', data)
-      })
-  }, [isData])
+  console.log('props.location.state.', props.location.state)
 
   const selectProjet = id => {
     const selectedProjet = projetsData.filter(item => item.projetKey === id)
@@ -41,21 +29,6 @@ const ClientDashboard = () => {
   }
 
   console.log('selectedPjtDetail', selectedPjtDetail)
-
-  /*  const getClientCode = async () => {
-    const clientsRef = await firebase.database().ref('userClients')
-
-    clientsRef.on('value', snapshot => {
-      console.log('childKey===================')
-      snapshot.forEach(childSnapshot => {
-        const childKey = childSnapshot.key
-        const childData = childSnapshot.val()
-
-        console.log('childKey===================', childKey)
-        console.log('childData', childData)
-      })
-    })
-  } */
 
   return (
     <Container>

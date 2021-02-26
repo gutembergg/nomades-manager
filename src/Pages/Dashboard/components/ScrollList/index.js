@@ -4,6 +4,7 @@ import { Container } from './styles'
 import './stylesCss.css'
 
 const ScrollList = ({ list, selectedDetail, title, info }) => {
+  console.log('listCCC', list)
   return (
     <div>
       <h2 style={{ color: '#fff' }}>

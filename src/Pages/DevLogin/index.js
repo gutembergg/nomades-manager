@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext, useEffect } from 'react'
+import React, { useCallback, useState, useContext } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import Input from '../../Components/Input'
@@ -16,60 +16,48 @@ const DevLogin = () => {
     email: '',
     password: ''
   })
-  const [projetsIDList, setProjetsIDList] = useState([])
 
-  useEffect(() => {
-    getAllSteps()
-  }, [])
+  console.log('========///////////////')
+  const listProjetId = []
 
-  const getAllSteps = () => {
-    console.log('========///////////////')
-    const listProjetId = []
-    const listEtapesDepasse = []
+  firebase
+    .database()
+    .ref('projetList')
+    .on('child_added', snapshot => {
+      snapshot.forEach(async childSnapshot => {
+        const parentKey = await childSnapshot.ref.parent.key
+        const childKey = childSnapshot.val()
 
-    firebase
-      .database()
-      .ref('projetEtapes')
-      .on('child_added', snapshot => {
-        snapshot.forEach(async childSnapshot => {
-          const parentKey = await childSnapshot.ref.parent.key
-          const childKey = childSnapshot.key
-          const etapeEcheance = childSnapshot.val().echeance
+        console.log('childKey', childKey)
+        /*  const toDay = new Date()
+        const toDayCompare = toDay.toLocaleDateString()
 
-          const toDay = new Date()
-          const toDayCompare = toDay.toLocaleDateString()
+        const echeance = new Date(etapeEcheance)
+        const echeanceCompare = echeance.toLocaleDateString()
 
-          const echeance = new Date(etapeEcheance)
-          const echeanceCompare = echeance.toLocaleDateString()
+        if (toDayCompare === echeanceCompare) {
+          console.log('childKey', childKey)
+        } else {
+          console.log('Pas gangne')
+        } */
 
-          if (toDayCompare === echeanceCompare) {
-            listEtapesDepasse.push(childKey)
-          } else {
-            console.log('Pas gangne')
-          }
+        listProjetId.push(parentKey)
 
-          listProjetId.push(parentKey)
-
-          setProjetsIDList(listProjetId)
-          firebase
-            .database()
-            .ref('clientProjets')
-            .on('value', snap => {
-              snap.forEach(snapChild => {
-                /*  const parentKey2 = snapChild.ref.parent.key
+        firebase
+          .database()
+          .ref('clientProjets')
+          .on('value', snap => {
+            snap.forEach(snapChild => {
+              /*  const parentKey2 = snapChild.ref.parent.key
                 const childKey = snapChild.val()
                 console.log('PARENT2-----------------------', parentKey2)
                 console.log('CHILD2----------------------', childKey) */
-              })
+              firebase.database().ref('projetEtapes').off('value')
             })
-
-          console.log('parentKey', parentKey)
-          console.log('childKey======', childKey)
-          console.log('etapeEcheance', etapeEcheance)
-          firebase.database().ref('projetEtapes').off('child_added')
-        })
+          })
+        firebase.database().ref('projetEtapes').off('child_added')
       })
-  }
+    })
 
   const updateModel = useCallback(
     e => {
@@ -94,7 +82,6 @@ const DevLogin = () => {
           const userEmail = firebase.auth().currentUser.email
 
           console.log('User-mail', userEmail)
-          getAllSteps()
 
           history.push('/dashboard/dev')
         })
@@ -106,9 +93,6 @@ const DevLogin = () => {
     },
     [model]
   )
-
-  console.log('projetsIDList', projetsIDList)
-
   return (
     <Container>
       <FormWrapper>

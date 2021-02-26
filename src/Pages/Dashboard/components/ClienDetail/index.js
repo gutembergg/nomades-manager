@@ -16,10 +16,11 @@ const ClientDetail = ({
   selectedDetail
 }) => {
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
-
   const toggleForm = () => {
     setAddFormProjetsToggle(!addFormProjetsToggle)
   }
+
+  console.log('Clientdetail', list)
 
   return (
     <Container>
