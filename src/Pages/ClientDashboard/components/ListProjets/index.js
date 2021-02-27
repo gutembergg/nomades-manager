@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Container } from './styles'
 
-const ListProjets = ({ listProjets, selectProjetFC }) => {
+const ListProjets = ({ listProjets, selectProjet }) => {
   console.log('===)))))))))))', listProjets)
   return (
     <>
@@ -12,7 +12,7 @@ const ListProjets = ({ listProjets, selectProjetFC }) => {
             <li
               className="projet_list"
               key={projet.key}
-              onClick={() => selectProjetFC(projet.key)}
+              onClick={() => selectProjet(projet.key)}
             >
               {projet.val().name}
             </li>

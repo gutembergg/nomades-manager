@@ -13,6 +13,7 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
+    "indent": "off",
     "react/no-unescaped-entities": "off",
     "no-unreachable": "off",
     "space-before-function-paren": "off",

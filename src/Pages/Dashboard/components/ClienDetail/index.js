@@ -25,31 +25,6 @@ const ClientDetail = ({
     setAddFormProjetsToggle(!addFormProjetsToggle)
   }
 
-  console.log('userClientDetail', userClientDetail.clientDetailId)
-
-  /* useEffect(() => {
-    const list = []
-    firebase
-      .database()
-      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-      .on('child_added', async data => {
-        if (data) {
-          const item = await data
-
-          console.log('DATA', data.val())
-          list.push(item)
-
-          setListProjets(list)
-        }
-
-        firebase
-          .database()
-          .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-          .off('child_added')
-      })
-    setListProjets([])
-  }, [userClientDetail.clientDetailId]) */
-
   return (
     <Container>
       {userClientDetail.clientDetailId !== '' && (

@@ -16,32 +16,24 @@ const ClientLogin = () => {
   const [clientCode, setClientCode] = useState('')
 
   const authClient = () => {
-    const listClients = []
     firebase
       .database()
       .ref('userClients')
       .once('value', snapParent => {
         snapParent.forEach(snapChild => {
           const child = snapChild.key
-          /* listClients.push(child) */
-          console.log('child', child)
 
           firebase
             .database()
             .ref(`userClients/${child}`)
             .once('value', snap => {
-              console.log('snap===>>', Object.keys(snap.toJSON()))
               const result = Object.keys(snap.toJSON())
               result.forEach(item => {
                 firebase
                   .database()
                   .ref(`userClients/${child}/${item}`)
                   .once('value', data => {
-                    console.log('data', data.val().code)
-
                     if (data.val().code === clientCode) {
-                      console.log('AAAAAHHHHH', data.ref.parent.key)
-                      console.log('mmmmaaassssaa', data.key)
                       const userData = {
                         userId: data.ref.parent.key,
                         clientId: data.key
@@ -51,8 +43,6 @@ const ClientLogin = () => {
                   })
               })
             })
-
-          console.log('childClient', listClients)
         })
       })
   }

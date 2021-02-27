@@ -1,36 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { FirebaseContext } from '../../../../services/Firebase/context'
 
 import { Container } from './styles'
 
-const DetailProjet = ({ projet }) => {
+const DetailProjet = ({ projetSelected }) => {
   const firebase = useContext(FirebaseContext)
+  console.log('firebase', firebase)
 
-  const [decisions, setDecisions] = useState([])
-
-  useEffect(() => {
-    const list = [...decisions]
-    firebase
-      .database()
-      .ref(`projetDecisions/${projet[0]?.projetKey}`)
-      .on('child_added', async data => {
-        console.log('DETAIL=====', await data)
-
-        const decisionObject = {
-          decisionKey: await data.key,
-          decisionValues: await data.val()
-        }
-
-        list.push(decisionObject)
-        setDecisions(list)
-      })
-  }, [projet[0]?.projetKey])
-
-  console.log('useState==decisions', decisions)
+  const result = projetSelected[0].val()
+  console.log('projetSelected', result)
 
   return (
     <Container>
-      <p style={{ color: '#fff' }}>{projet[0]?.projetValues.name}</p>
+      <p style={{ color: '#fff' }}>{projetSelected[0].val().name}</p>
     </Container>
   )
 }

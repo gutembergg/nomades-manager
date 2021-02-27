@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import { FirebaseContext } from '../../services/Firebase/context'
 import ListProjet from './components/ListProjets'
-/* import DetailProjet from './components/DetailProjet'  */
+import DetailProjet from './components/DetailProjet'
+import Decisions from './components/DetailProjet/Decisions'
 
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
@@ -17,6 +18,7 @@ const ClientDashboard = props => {
   const [userName, setUserName] = useState('')
   const [list_projets, setListProjets] = useState([])
   const [newProjet, setNewProjet] = useState(false)
+  const [projetSelected, setProjetSelected] = useState(null)
 
   useEffect(() => {
     setNewProjet(true)
@@ -31,17 +33,21 @@ const ClientDashboard = props => {
     firebase
       .database()
       .ref(`clientProjets/${myparam.clientId}`)
-      .on('child_added', async projetData => {
-        console.log('projeeee', projetData)
-        const result = await projetData
+      .on('child_added', projetData => {
+        const result = projetData
 
         dataList.push(result)
-        console.log('LLLLIIISSSTAAA', dataList)
         setListProjets(dataList)
       })
   }, [myparam, newProjet])
 
-  console.log('listProjets====/////', list_projets)
+  const selectProjet = id => {
+    const selectedProjet = list_projets.filter(projet => projet.key === id)
+    setProjetSelected(selectedProjet)
+    console.log('selectedProjet', selectedProjet[0].key)
+  }
+
+  console.log('projetSelected===========', projetSelected)
 
   return (
     <Container>
@@ -53,13 +59,16 @@ const ClientDashboard = props => {
       <MDBContainer>
         <MDBRow>
           <MDBCol>
-            <ListProjet listProjets={list_projets} />{' '}
+            <ListProjet
+              listProjets={list_projets}
+              selectProjet={selectProjet}
+            />
           </MDBCol>
 
-          <MDBCol>{/*  <DetailProjet /> */}</MDBCol>
-
-          <MDBCol>List decisions</MDBCol>
-
+          <MDBCol>
+            {projetSelected && <DetailProjet projetSelected={projetSelected} />}
+            {projetSelected && <Decisions projetSelected={projetSelected} />}
+          </MDBCol>
           <MDBCol>List files</MDBCol>
         </MDBRow>
       </MDBContainer>

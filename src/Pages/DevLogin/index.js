@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from 'react'
+import React, { useCallback, useState, useContext, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import Input from '../../Components/Input'
@@ -17,47 +17,16 @@ const DevLogin = () => {
     password: ''
   })
 
-  console.log('========///////////////')
-  const listProjetId = []
-
-  firebase
-    .database()
-    .ref('projetList')
-    .on('child_added', snapshot => {
-      snapshot.forEach(async childSnapshot => {
-        const parentKey = await childSnapshot.ref.parent.key
-        const childKey = childSnapshot.val()
-
-        console.log('childKey', childKey)
-        /*  const toDay = new Date()
-        const toDayCompare = toDay.toLocaleDateString()
-
-        const echeance = new Date(etapeEcheance)
-        const echeanceCompare = echeance.toLocaleDateString()
-
-        if (toDayCompare === echeanceCompare) {
-          console.log('childKey', childKey)
-        } else {
-          console.log('Pas gangne')
-        } */
-
-        listProjetId.push(parentKey)
-
-        firebase
-          .database()
-          .ref('clientProjets')
-          .on('value', snap => {
-            snap.forEach(snapChild => {
-              /*  const parentKey2 = snapChild.ref.parent.key
-                const childKey = snapChild.val()
-                console.log('PARENT2-----------------------', parentKey2)
-                console.log('CHILD2----------------------', childKey) */
-              firebase.database().ref('projetEtapes').off('value')
-            })
-          })
-        firebase.database().ref('projetEtapes').off('child_added')
+  useEffect(() => {
+    firebase
+      .database()
+      .ref('projetEtapes')
+      .once('value', snapshot => {
+        snapshot.forEach(snapChild => {
+          console.log(snapChild)
+        })
       })
-    })
+  }, [])
 
   const updateModel = useCallback(
     e => {

@@ -204,6 +204,16 @@ const Dashboard = () => {
     })
   }
 
+  const selectedDetail = id => {
+    const selectedProjet = listProjets.filter(projet => projet.key === id)
+
+    setSelectedProjet({
+      ...selectedProjet,
+      projetValues: selectedProjet[0].val(),
+      projetId: selectedProjet[0].key
+    })
+  }
+
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
 
@@ -211,13 +221,11 @@ const Dashboard = () => {
     firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-      .on('child_added', async data => {
+      .on('child_added', data => {
         if (data) {
-          const item = await data
+          const item = data
 
-          console.log('DATA', data.val())
           list.push(item)
-          console.log('list=========', list)
 
           setListProjets(list)
         } else {
@@ -233,17 +241,6 @@ const Dashboard = () => {
       projetId: ''
     })
   }, [userClientDetail.clientDetailId, clientId])
-  console.log('listProjets=====', listProjets)
-
-  const selectedDetail = id => {
-    const selectedProjet = listProjets.filter(projet => projet.key === id)
-
-    setSelectedProjet({
-      ...selectedProjet,
-      projetValues: selectedProjet[0].val(),
-      projetId: selectedProjet[0].key
-    })
-  }
 
   console.log('listProjets==================', listProjets)
   /// //////////////////////////////////////////////////////////////
