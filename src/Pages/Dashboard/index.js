@@ -55,7 +55,6 @@ const Dashboard = () => {
     }
   ])
   const [newState, setNewState] = useState('')
-  /* const [newProjet, setNewProjet] = useState(false) */
 
   useEffect(() => {
     console.log('LIG61=======')
@@ -208,7 +207,7 @@ const Dashboard = () => {
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
 
-    const list = [...listProjets]
+    const list = []
     firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
@@ -218,21 +217,23 @@ const Dashboard = () => {
 
           console.log('DATA', data.val())
           list.push(item)
+          console.log('list=========', list)
 
           setListProjets(list)
+        } else {
+          firebase
+            .database()
+            .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+            .off('child_added')
         }
-
-        firebase
-          .database()
-          .ref(`clientProjets/${userClientDetail.clientDetailId}`)
-          .off('child_added')
       })
-    setListProjets([])
+
     setSelectedProjet({
       projetValues: '',
       projetId: ''
     })
   }, [userClientDetail.clientDetailId, clientId])
+  console.log('listProjets=====', listProjets)
 
   const selectedDetail = id => {
     const selectedProjet = listProjets.filter(projet => projet.key === id)

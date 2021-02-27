@@ -2,18 +2,19 @@ import React from 'react'
 
 import { Container } from './styles'
 
-const ListProjets = ({ projets, selectProjetFC }) => {
+const ListProjets = ({ listProjets, selectProjetFC }) => {
+  console.log('===)))))))))))', listProjets)
   return (
     <>
       <Container>
         <ul>
-          {projets.map(projet => (
+          {listProjets.map(projet => (
             <li
               className="projet_list"
-              key={projet.projetKey}
-              onClick={() => selectProjetFC(projet.projetKey)}
+              key={projet.key}
+              onClick={() => selectProjetFC(projet.key)}
             >
-              {projet.projetValues.name}
+              {projet.val().name}
             </li>
           ))}
         </ul>

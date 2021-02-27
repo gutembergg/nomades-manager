@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Logo from '../../assets/logo.png'
 import { FirebaseContext } from '../../services/Firebase/context'
-/* import ListProjet from './components/ListProjets'
-import DetailProjet from './components/DetailProjet' */
+import ListProjet from './components/ListProjets'
+/* import DetailProjet from './components/DetailProjet'  */
 
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
@@ -15,9 +15,12 @@ const ClientDashboard = props => {
   const myparam = location.state.params
 
   const [userName, setUserName] = useState('')
+  const [list_projets, setListProjets] = useState([])
+  const [newProjet, setNewProjet] = useState(false)
 
   useEffect(() => {
-    const listProjet = []
+    setNewProjet(true)
+    const dataList = []
     firebase
       .database()
       .ref(`users/${myparam.userId}`)
@@ -28,11 +31,17 @@ const ClientDashboard = props => {
     firebase
       .database()
       .ref(`clientProjets/${myparam.clientId}`)
-      .once('value', projeData => {
-        listProjet.push(projeData.val())
-        console.log('clientData', listProjet)
+      .on('child_added', async projetData => {
+        console.log('projeeee', projetData)
+        const result = await projetData
+
+        dataList.push(result)
+        console.log('LLLLIIISSSTAAA', dataList)
+        setListProjets(dataList)
       })
-  }, [])
+  }, [myparam, newProjet])
+
+  console.log('listProjets====/////', list_projets)
 
   return (
     <Container>
@@ -43,7 +52,9 @@ const ClientDashboard = props => {
       <h4>Developper: {userName}</h4>
       <MDBContainer>
         <MDBRow>
-          <MDBCol>{/*  <ListProjet /> */}</MDBCol>
+          <MDBCol>
+            <ListProjet listProjets={list_projets} />{' '}
+          </MDBCol>
 
           <MDBCol>{/*  <DetailProjet /> */}</MDBCol>
 
