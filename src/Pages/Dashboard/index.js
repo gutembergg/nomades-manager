@@ -55,7 +55,7 @@ const Dashboard = () => {
     }
   ])
   const [newState, setNewState] = useState('')
-  const [newProjet, setNewProjet] = useState(false)
+  /* const [newProjet, setNewProjet] = useState(false) */
 
   useEffect(() => {
     console.log('LIG61=======')
@@ -189,14 +189,14 @@ const Dashboard = () => {
       link: projetModel.link
     })
 
-    firebase
+    /* firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
       .once('child_added', async data => {
         if (data) {
           setNewProjet(true)
         }
-      })
+      }) */
 
     setProjetModel({
       name: '',
@@ -232,7 +232,7 @@ const Dashboard = () => {
       projetValues: '',
       projetId: ''
     })
-  }, [userClientDetail.clientDetailId, clientId, newProjet])
+  }, [userClientDetail.clientDetailId, clientId])
 
   const selectedDetail = id => {
     const selectedProjet = listProjets.filter(projet => projet.key === id)

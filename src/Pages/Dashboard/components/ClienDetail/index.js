@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { FirebaseContext } from '../../../../services/Firebase/context'
 import { MDBCollapse } from 'mdbreact'
 
 import { BsPlusCircle } from 'react-icons/bs'
@@ -7,20 +8,47 @@ import { Container, AddProjetForm, AddProjetsFormTitle } from './styles'
 import ScrollList from '../ScrollList'
 
 const ClientDetail = ({
-  projetModel,
-  handleSubmit,
   updateProjetModel,
+  projetModel,
   userClientDetail,
+  handleSubmit,
+  info,
+  selectedDetail,
   title,
-  list,
-  selectedDetail
+  list
 }) => {
+  const firebase = useContext(FirebaseContext)
+  console.log(firebase)
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
+
   const toggleForm = () => {
     setAddFormProjetsToggle(!addFormProjetsToggle)
   }
 
-  console.log('Clientdetail', list)
+  console.log('userClientDetail', userClientDetail.clientDetailId)
+
+  /* useEffect(() => {
+    const list = []
+    firebase
+      .database()
+      .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+      .on('child_added', async data => {
+        if (data) {
+          const item = await data
+
+          console.log('DATA', data.val())
+          list.push(item)
+
+          setListProjets(list)
+        }
+
+        firebase
+          .database()
+          .ref(`clientProjets/${userClientDetail.clientDetailId}`)
+          .off('child_added')
+      })
+    setListProjets([])
+  }, [userClientDetail.clientDetailId]) */
 
   return (
     <Container>
@@ -30,7 +58,8 @@ const ClientDetail = ({
             <ScrollList
               title={title}
               list={list}
-              info={userClientDetail.clientDetailValue.name}
+              info={info}
+              clientCode={userClientDetail.clientDetailValue.code}
               selectedDetail={selectedDetail}
             />
             <AddProjetsFormTitle onClick={toggleForm}>
