@@ -7,6 +7,12 @@ export const Container = styled.div`
   height: 100vh;
   background: ${colors.primary};
 `
+export const DevName = styled.h4`
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  color: #fff;
+`
 export const NavBar = styled.div`
   display: flex;
   flex-direction: row;

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { FirebaseContext } from '../../../../services/Firebase/context'
+import Switch from 'react-switch'
 
 import Logo from '../../../../assets/logo.png'
-import { BsGearFill } from 'react-icons/bs'
 
 import { Container, Image, Icon } from './styles'
 
@@ -28,8 +28,12 @@ const NavBar = () => {
         <Image src={Logo} alt="Logo" />
       </div>
       <Icon>
-        <button onClick={signOut}>SignOut</button>
-        <BsGearFill color="#fff" />
+        <Switch
+          height={25}
+          onColor="#00e676"
+          onChange={signOut}
+          checked={true}
+        />
       </Icon>
     </Container>
   )

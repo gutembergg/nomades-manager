@@ -5,6 +5,7 @@ export const Container = styled.div`
   width: 100%;
   height: 150px;
 
+  margin-top: 50px;
   background: #000;
   color: ${colors.black};
   overflow-y: scroll;

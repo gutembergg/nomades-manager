@@ -8,7 +8,7 @@ import Decisions from './components/DetailProjet/Decisions'
 
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
-import { Container, NavBar, Image, Content } from './styles'
+import { Container, NavBar, Image, Content, DevName } from './styles'
 
 const ClientDashboard = props => {
   const firebase = useContext(FirebaseContext)
@@ -47,15 +47,13 @@ const ClientDashboard = props => {
     console.log('selectedProjet', selectedProjet[0].key)
   }
 
-  console.log('projetSelected===========', projetSelected)
-
   return (
     <Container>
       <NavBar>
         <Image src={Logo} alt="logo" />
       </NavBar>
 
-      <h4>Developper: {userName}</h4>
+      <DevName>Développeur: {userName}</DevName>
       <MDBContainer>
         <MDBRow>
           <MDBCol>

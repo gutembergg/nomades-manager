@@ -89,9 +89,6 @@ const EtapesCard = ({ selectedProjet }) => {
   }, [projetId, selectedProjet.projetId])
 
   const onChangeStatus = id => {
-    console.log('projet_id', selectedProjet.projetId)
-    console.log('ID====ID', id)
-
     firebase
       .database()
       .ref(`projetEtapes/${selectedProjet.projetId}/${id}`)

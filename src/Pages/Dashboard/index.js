@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
+/* import emailJs from 'emailjs-com' */
 import { FirebaseContext } from '../../services/Firebase/context'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -55,6 +56,8 @@ const Dashboard = () => {
     }
   ])
   const [newState, setNewState] = useState('')
+  const [newClient, setNewClient] = useState('')
+  const [new_project, setNew_project] = useState(false)
 
   useEffect(() => {
     console.log('LIG61=======')
@@ -76,7 +79,118 @@ const Dashboard = () => {
         firebase.database().ref(`users/${userId}`).off('child_added')
       }
     })
+
+    /// Get users projects echeances///////////////////////////////////////////
+    firebase
+      .database()
+      .ref('projetEtapes')
+      .once('value', snapshot => {
+        snapshot.forEach(snapChild => {
+          console.log('=====>', snapChild.key)
+
+          firebase
+            .database()
+            .ref(`projetEtapes/${snapChild.key}`)
+            .once('value', data => {
+              const result = Object.keys(data.toJSON())
+              console.log('RESULT', result)
+              result.forEach(item => {
+                firebase
+                  .database()
+                  .ref(`projetEtapes/${snapChild.key}/${item}`)
+                  .once('value', res => {
+                    console.log('RES', res.key)
+                    const projetKey = res.ref.parent.key
+                    const echeanceDate = res.val().echeance
+                    const toDay = new Date()
+                    const toDayCompare = toDay.toLocaleDateString()
+
+                    const echeance = new Date(echeanceDate)
+                    const echeanceCompare = echeance.toLocaleDateString()
+
+                    // get client ID///////////////////////////////
+                    if (toDayCompare === echeanceCompare) {
+                      console.log('GAGNE', projetKey)
+                      firebase
+                        .database()
+                        .ref(`projetList/${projetKey}`)
+                        .once('value', snap => {
+                          console.log('SNAP==>>===>>>>', snap.val().name)
+                          const projectName = snap.val().name
+                          console.log('projectName', projectName)
+                          const clientResponseId = snap.val().clientId
+
+                          firebase
+                            .database()
+                            .ref('userClients')
+                            .once('value', client => {
+                              console.log('CLIENT', client.val())
+                              const res2 = client.val()
+                              const response = Object.keys(res2)
+                              response.forEach(userId => {
+                                firebase
+                                  .database()
+                                  .ref(`userClients/${userId}`)
+                                  .once('value', userClient => {
+                                    console.log('userClient', userClient.val())
+                                    const userClientValues = userClient.val()
+                                    const idClient = Object.keys(
+                                      userClientValues
+                                    )
+                                    console.log('idClient', idClient)
+                                    idClient.forEach(id => {
+                                      if (clientResponseId === id) {
+                                        firebase
+                                          .database()
+                                          .ref(`users/${userClient.key}`)
+                                          .once('value', val => {
+                                            /*  sendEmail(
+                                              val.val().email,
+                                              projectName
+                                            ) */
+                                            console.log('ok')
+                                          })
+                                      }
+                                    })
+                                  })
+                              })
+                            })
+                        })
+                    } else {
+                      console.log('Pas gangne')
+                    }
+                  })
+              })
+            })
+        })
+      })
+
+    /// ///////////////////////////////////////////////////////////////////////
   }, [userId])
+
+  /*  const sendEmail = (email, projectName) => {
+    const emailParams = {
+      from_name: 'ProjetManager',
+      to_name: email,
+      message: `vous êtes arrivé a la écheance pour le projet: ${projectName}`,
+      reply_to: email
+    }
+    emailJs
+      .send(
+        'service_xtxdh99',
+        'template_pphabso',
+        emailParams,
+        'user_m6Vr8tTl3nxIGbi1Dkr9t'
+      )
+      .then(
+        function (response) {
+          console.log('SUCCESS!', response.status, response.text)
+        },
+        function (error) {
+          console.log('FAILED...', error)
+        }
+      )
+  } */
 
   useEffect(() => {
     setClientId(userClientDetail.clientDetailId)
@@ -99,6 +213,7 @@ const Dashboard = () => {
   // select client detail ///////////////////////////////////////////
   const selectClient = id => {
     const clientDetail = listClients.filter(client => client.key === id)
+    console.log('selectClient============', id)
 
     console.log('selectClient', clientDetail)
     setUserClientsdetail({
@@ -106,6 +221,8 @@ const Dashboard = () => {
       clientDetailValue: clientDetail[0].val(),
       clientDetailId: clientDetail[0].key
     })
+    setNewClient(id)
+    setListProjets([])
   }
 
   console.log('clientDetail[0].key', userClientDetail)
@@ -196,7 +313,7 @@ const Dashboard = () => {
           setNewProjet(true)
         }
       }) */
-
+    setNew_project(true)
     setProjetModel({
       name: '',
       description: '',
@@ -204,20 +321,11 @@ const Dashboard = () => {
     })
   }
 
-  const selectedDetail = id => {
-    const selectedProjet = listProjets.filter(projet => projet.key === id)
-
-    setSelectedProjet({
-      ...selectedProjet,
-      projetValues: selectedProjet[0].val(),
-      projetId: selectedProjet[0].key
-    })
-  }
-
   useEffect(() => {
-    setClientId(userClientDetail.clientDetailId)
-
+    console.log('======AQUI======')
     const list = []
+    /* setClientId(userClientDetail.clientDetailI) */
+
     firebase
       .database()
       .ref(`clientProjets/${userClientDetail.clientDetailId}`)
@@ -226,7 +334,7 @@ const Dashboard = () => {
           const item = data
 
           list.push(item)
-
+          console.log('LISTE===>', list)
           setListProjets(list)
         } else {
           firebase
@@ -240,8 +348,17 @@ const Dashboard = () => {
       projetValues: '',
       projetId: ''
     })
-  }, [userClientDetail.clientDetailId, clientId])
+  }, [userClientDetail.clientDetailId, clientId, newClient, new_project])
 
+  const selectedDetail = id => {
+    const selectedProjet = listProjets.filter(projet => projet.key === id)
+
+    setSelectedProjet({
+      ...selectedProjet,
+      projetValues: selectedProjet[0].val(),
+      projetId: selectedProjet[0].key
+    })
+  }
   console.log('listProjets==================', listProjets)
   /// //////////////////////////////////////////////////////////////
 
