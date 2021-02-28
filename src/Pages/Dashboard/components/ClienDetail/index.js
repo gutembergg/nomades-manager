@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react'
-import { FirebaseContext } from '../../../../services/Firebase/context'
+import React, { useState } from 'react'
 import { MDBCollapse } from 'mdbreact'
 
 import { BsPlusCircle } from 'react-icons/bs'
@@ -17,8 +16,6 @@ const ClientDetail = ({
   title,
   list
 }) => {
-  const firebase = useContext(FirebaseContext)
-  console.log(firebase)
   const [addFormProjetsToggle, setAddFormProjetsToggle] = useState(false)
 
   const toggleForm = () => {

@@ -61,6 +61,13 @@ const Decisions = ({ selectedProjet }) => {
       })
   }
 
+  firebase
+    .database()
+    .ref(`projetDecisions/${selectedProjet.projetId}`)
+    .on('child_changed', data => {
+      console.log('CHILD_CHANGED', data)
+    })
+
   useEffect(() => {
     setProjectId(selectedProjet.projetId)
     const list = [...listDecisions]
@@ -88,6 +95,7 @@ const Decisions = ({ selectedProjet }) => {
 
     setListDecision([])
   }, [selectedProjet.projetId, projectId, newPeoject])
+
   const toggleList = () => {
     setToggle(!toggle)
   }

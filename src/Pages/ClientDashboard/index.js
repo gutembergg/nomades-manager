@@ -11,9 +11,10 @@ import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 import { Container, NavBar, Image, Content, DevName } from './styles'
 
 const ClientDashboard = props => {
-  const firebase = useContext(FirebaseContext)
   const location = useLocation()
-  const myparam = location.state.params
+  const myparam = location.state
+
+  const firebase = useContext(FirebaseContext)
 
   const [userName, setUserName] = useState('')
   const [list_projets, setListProjets] = useState([])
@@ -25,14 +26,14 @@ const ClientDashboard = props => {
     const dataList = []
     firebase
       .database()
-      .ref(`users/${myparam.userId}`)
+      .ref(`users/${myparam.data.userId}`)
       .once('value', userData => {
         setUserName(userData.val().name)
       })
 
     firebase
       .database()
-      .ref(`clientProjets/${myparam.clientId}`)
+      .ref(`clientProjets/${myparam.data.clientId}`)
       .on('child_added', projetData => {
         const result = projetData
 

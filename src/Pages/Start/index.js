@@ -20,17 +20,18 @@ const Home = () => {
     <Container>
       <img src={Logo} alt="Logo" />
       <ContentCard>
-        <StartButton onClick={() => navigate('/sigin/dev')}>
-          <FaCode size={50} />
-          <span>Entrer comme Dev</span>
+        <StartButton onClick={() => navigate('/sigin/client')}>
+          <FaUsers size={50} />
+          <span>Entrer comme Client</span>
         </StartButton>
         <StartButton
-          onClick={() => navigate('/sigin/client')}
+          onClick={() => navigate('/sigin/dev')}
           color={colors.black}
           background={colors.primary}
         >
-          <FaUsers size={50} />
-          <span>Entrer comme Client</span>
+          <FaCode size={50} />
+
+          <span>Entrer comme Dev</span>
         </StartButton>
       </ContentCard>
     </Container>

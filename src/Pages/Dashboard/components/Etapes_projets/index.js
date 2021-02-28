@@ -41,31 +41,6 @@ const Etapes = ({ selectedProjet }) => {
     [etapeModel]
   )
 
-  /*  useEffect(() => {
-    setProjet_id(selectedProjet.projetId)
-
-    firebase
-      .database()
-      .ref(`projetEtapes/${selectedProjet.projetId}`)
-      .on('value', async data => {
-        if (data) {
-          const result = await data.val()
-          setEtape(result)
-           const etapeDate = await data.val().echeance
-          console.log('result===', result)
-        }
-
-        firebase
-          .database()
-          .ref(`projetEtapes/${selectedProjet.projetId}`)
-          .off('child_added')
-      })
-  }, [selectedProjet.projetId, projet_id, newEtape]) */
-
-  console.log('///etapes///')
-  /*
-  const etapesFilter = etapes.filter(item => item.val().status === 'active') */
-
   const toggleFrom = () => {
     setToggle(!toggle)
   }

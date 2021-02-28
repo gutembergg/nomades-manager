@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { FirebaseContext } from '../../services/Firebase/context'
 import Logo from '../../assets/logo.png'
@@ -9,8 +9,7 @@ import { FaCode } from 'react-icons/fa'
 
 import { Container, Content, Form, FormActions } from './styles'
 
-const ClientLogin = () => {
-  const history = useHistory()
+const ClientLogin = props => {
   const firebase = useContext(FirebaseContext)
 
   const [clientCode, setClientCode] = useState('')
@@ -38,7 +37,12 @@ const ClientLogin = () => {
                         userId: data.ref.parent.key,
                         clientId: data.key
                       }
-                      history.push('/dashboard/client', { params: userData })
+                      props.history.push({
+                        pathname: '/dashboard/client',
+                        state: {
+                          data: userData
+                        }
+                      })
                     }
                   })
               })

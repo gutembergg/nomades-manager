@@ -1,16 +1,18 @@
 import React from 'react'
 
-import { Container } from './styles'
+import { Container, CodeText } from './styles'
 import './stylesCss.css'
 
 const ScrollList = ({ list, selectedDetail, title, info, clientCode }) => {
-  console.log('listCCC', list)
   return (
     <div>
       <h2 style={{ color: '#fff' }}>
         {title} {info}
       </h2>
-      {clientCode && <p style={{ color: '#fff' }}>code: {clientCode}</p>}
+
+      {clientCode && (
+        <CodeText style={{ color: '#fff' }}>code: {clientCode}</CodeText>
+      )}
 
       <Container id="clientList">
         <ul>

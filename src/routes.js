@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 
 import Start from './Pages/Start'
 import DevLogin from './Pages/DevLogin'
@@ -10,7 +10,7 @@ import ClientDashboard from './Pages/ClientDashboard'
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Switch>
         <Route path="/" exact component={Start} />
         <Route path="/sigin/dev" exact component={DevLogin} />
@@ -19,7 +19,7 @@ const Routes = () => {
         <Route path="/dashboard/dev" exact component={Dashboard} />
         <Route path="/dashboard/client" exact component={ClientDashboard} />
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

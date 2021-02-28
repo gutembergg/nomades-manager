@@ -28,29 +28,6 @@ const EtapesCard = ({ selectedProjet }) => {
     setValidateEtape(true)
   }
 
-  firebase
-    .database()
-    .ref(`projetEtapes/${selectedProjet.projetId}`)
-    .once('child_moved', async data => {
-      const result = await data
-      console.log('(//////////////)))))))))', result)
-    })
-  /// 0000000000000000000000000000000000000000000000000000000000
-  firebase
-    .database()
-    .ref(`projetEtapes/${selectedProjet.projetId}`)
-    .on('child_changed', data => {
-      if (data) {
-        console.log('child_changed', data.val().description)
-      }
-      firebase
-        .database()
-        .ref(`projetEtapes/${selectedProjet.projetId}`)
-        .off('child_changed')
-    })
-
-  /// 0000000000000000000000000000000000000000000000000000000000
-
   useEffect(() => {
     setProjetId(selectedProjet.projetId)
 
@@ -58,7 +35,6 @@ const EtapesCard = ({ selectedProjet }) => {
       .database()
       .ref(`projetEtapes/${selectedProjet.projetId}`)
       .on('child_added', async data => {
-        console.log('DDDAAATTTAA', data.val())
         if (data) {
           const result = {
             etapeId: await data.key,
@@ -70,8 +46,6 @@ const EtapesCard = ({ selectedProjet }) => {
           }
 
           setSteps(result)
-
-          console.log('RESULT', result)
         }
         firebase
           .database()
@@ -97,8 +71,6 @@ const EtapesCard = ({ selectedProjet }) => {
       })
     setSwitchComponent(!switchComponent)
   }
-
-  console.log('validateEtape==>', validateEtape)
 
   return (
     <div style={{ color: '#fff' }}>

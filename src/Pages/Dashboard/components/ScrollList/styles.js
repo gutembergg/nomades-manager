@@ -18,3 +18,8 @@ export const Container = styled.div`
     color: #fff;
   }
 `
+
+export const CodeText = styled.p`
+  color: #fff;
+  font-size: 13px;
+`
